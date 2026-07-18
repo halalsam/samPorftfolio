@@ -11,12 +11,31 @@ const PreLoader = () => {
   
 
   useEffect(() => {
+    const alreadyPlayed =
+      typeof window !== 'undefined' &&
+      window.sessionStorage.getItem('preloaderPlayed') === 'true';
+
+    // Already ran this session: reveal the hero/nav instantly and hide the
+    // loader overlay without replaying the intro animation.
+    if (alreadyPlayed) {
+      gsap.set('.loader', { display: 'none' });
+      gsap.set('#hero', { scale: 1 });
+      gsap.set('.hero-title', { y: 0, opacity: 1, scale: 1 });
+      gsap.set('.hero-para', { y: 0, opacity: 1 });
+      gsap.set('.nav', { y: 0 });
+      return;
+    }
+
     gsap.set('.img', { y: 500 });
     gsap.set('.loader-img', { x: 500 });
     gsap.set('.hero-title', { y: 300, opacity: 0, scale: 2 });
     gsap.set('.hero-para', { y: 100, opacity: 0 });
     gsap.set('.nav', { y: -100 });
     gsap.set('#hero', { scale: 0.8 });
+
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.setItem('preloaderPlayed', 'true');
+    }
 
     const tl = gsap.timeline({ delay: 1 });
 
