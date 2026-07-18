@@ -9,8 +9,9 @@ export function generateStaticParams() {
   return featuredProjects.map((project) => ({ slug: project.slug }));
 }
 
-export function generateMetadata({ params }) {
-  const project = getProject(params.slug);
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const project = getProject(slug);
   if (!project) return { title: 'Sameer | Project' };
   return {
     title: `Sameer | ${project.name}`,
@@ -19,8 +20,9 @@ export function generateMetadata({ params }) {
   };
 }
 
-export default function ProjectPage({ params }) {
-  const project = getProject(params.slug);
+export default async function ProjectPage({ params }) {
+  const { slug } = await params;
+  const project = getProject(slug);
   if (!project) notFound();
 
   return (
