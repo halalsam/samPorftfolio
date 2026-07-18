@@ -258,19 +258,6 @@ background-color: #ffffff;
   background-color: #100f0f;
 }
 
-.loader
-{
-  clip-path: polygon(0% 0%,100% 0%,100% 100%,0% 100% );
-
-}
-.loader-img{
-    clip-path: polygon(0% 0%,100% 0%,100% 100%,0% 100% );
-}
-.img{
-  position: relative;
-  flex: 1;
-      clip-path: polygon(0% 0%,100% 0%,100% 100%,0% 100% );
-}
 .hero-title1 {
   
    clip-path: polygon(0% 0%,100% 0%,100% 100%,0% 100% );
@@ -285,13 +272,94 @@ background-color: #ffffff;
 
 /* Preloader initial states — prevent a flash of final content on first paint,
    before GSAP's useEffect runs. These mirror the gsap.set() calls in
-   src/components/pre-loader/index.jsx. GSAP overwrites them as it animates. */
-.img { transform: translateY(500px); }
-.loader-img { transform: translateX(500px); }
-.hero-title { transform: translateY(300px) scale(2); opacity: 0; }
-.hero-para { transform: translateY(100px); opacity: 0; }
-.nav { transform: translateY(-100px); }
-#hero { transform: scale(0.8); }
+   src/components/pre-loader/index.jsx, and only apply while the preloader
+   overlay is actually mounted (pages rendered with showPreloader={false}
+   must not hide their hero/nav). GSAP overwrites them as it animates. */
+body:has(.preloader) .hero-title { transform: translateY(300px) scale(2); opacity: 0; }
+body:has(.preloader) .hero-para { transform: translateY(100px); opacity: 0; }
+body:has(.preloader) .nav { transform: translateY(-100px); }
+body:has(.preloader) #hero { transform: scale(0.8); }
+
+/* ---------------------------------------------------------------------------
+   Preloader ("The Boot Sequence") — namespaced pl-* so nothing collides with
+   the .loader spinner used in Recent-Work. Initial states here mirror the
+   gsap.set() calls so there is no flash before the timeline takes over. */
+
+.preloader .pl-meta,
+.preloader .pl-cross,
+.preloader .pl-monogram {
+  opacity: 0;
+}
+.preloader .pl-line-inner {
+  transform: translateY(112%);
+}
+.preloader .pl-counter-inner {
+  transform: translateY(112%);
+}
+.preloader .pl-bar-fill {
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* Ghost monogram: outlined Thunder glyphs, barely-there */
+.preloader .pl-monogram {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(232, 230, 227, 0.09);
+}
+
+/* Editorial crosshair marks */
+.preloader .pl-cross {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(185, 188, 193, 0.55);
+}
+
+/* Rolling odometer digits: uniform masked cells, translated by yPercent
+   from JS. Cell height and the strip's baseline shift are derived from
+   Thunder-BlackLC's measured glyph metrics (digit ink: ascent 0.71em,
+   descent 0.01em; font box 0.72/0.2) so the ink sits dead-center in the
+   mask instead of being clipped by line-box centering. */
+.preloader .pl-digit {
+  display: block;
+  height: 0.76em;
+  overflow: hidden;
+}
+.preloader .pl-digit-strip {
+  display: block;
+  /* line-height:1 puts ink at 0.05em from cell top; lift it to 0.02em */
+  margin-top: -0.03em;
+}
+.preloader .pl-digit-strip > span {
+  display: block;
+  height: 0.76em;
+  width: 0.4em;
+  line-height: 1;
+  text-align: center;
+}
+
+/* Film grain — feTurbulence tile, stepped drift for a filmic shimmer */
+.preloader .pl-grain {
+  position: absolute;
+  inset: -100%;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: pl-grain 0.9s steps(8) infinite;
+}
+
+@keyframes pl-grain {
+  0% { transform: translate(0, 0); }
+  12.5% { transform: translate(-2%, -3%); }
+  25% { transform: translate(3%, -1%); }
+  37.5% { transform: translate(-1%, 3%); }
+  50% { transform: translate(2%, 2%); }
+  62.5% { transform: translate(-3%, 1%); }
+  75% { transform: translate(1%, -2%); }
+  87.5% { transform: translate(-2%, 2%); }
+  100% { transform: translate(0, 0); }
+}
 
 .reveal {
   visibility: hidden;
