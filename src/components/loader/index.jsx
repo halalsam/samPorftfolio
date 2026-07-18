@@ -1,3 +1,4 @@
+'use client';
 // components/CounterAnimation.js
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';

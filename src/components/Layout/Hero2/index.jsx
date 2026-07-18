@@ -1,7 +1,8 @@
+'use client';
 import { slideUpTitle } from '@/animation/anim';
 import { useScroll, useTransform, motion } from 'framer-motion';
 import React, { useRef } from 'react';
-import localFont from '@next/font/local';
+import localFont from 'next/font/local';
 import MagneticButton from '@/components/Common/magnetic-button';
 
 const thunder = localFont({

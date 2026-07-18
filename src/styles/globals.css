@@ -1,7 +1,7 @@
+@import url('../css/clash-display.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('../css/clash-display.css');
 
 
 *{
@@ -282,6 +282,16 @@ background-color: #ffffff;
 .hero-title{
     font-family: 'Thunder';
 }
+
+/* Preloader initial states — prevent a flash of final content on first paint,
+   before GSAP's useEffect runs. These mirror the gsap.set() calls in
+   src/components/pre-loader/index.jsx. GSAP overwrites them as it animates. */
+.img { transform: translateY(500px); }
+.loader-img { transform: translateX(500px); }
+.hero-title { transform: translateY(300px) scale(2); opacity: 0; }
+.hero-para { transform: translateY(100px); opacity: 0; }
+.nav { transform: translateY(-100px); }
+#hero { transform: scale(0.8); }
 
 .reveal {
   visibility: hidden;

@@ -1,9 +1,10 @@
+'use client';
 import React, { useEffect } from 'react';
 import Svg1 from './svg';
 import gsap from 'gsap/dist/gsap';
 import CustomEase from 'gsap/dist/CustomEase';
 
-const index = () => {
+const PreLoader = () => {
   gsap.registerPlugin(CustomEase);
   CustomEase.create('smooth', '0.25, 0.1, 0.25, 1');
     CustomEase.create('fast', '0, 0.55, 0.45, 1');
@@ -127,4 +128,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default PreLoader;

@@ -1,3 +1,4 @@
+'use client';
 import { slideUp, slideUpTitle } from '@/animation/anim';
 import { useScroll, useTransform, motion, useInView } from 'framer-motion';
 import Image from 'next/image';

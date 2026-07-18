@@ -13,7 +13,7 @@ import {
   Sticker5,
   Sticker6,
 } from './stickers';
-import localFont from '@next/font/local';
+import localFont from 'next/font/local';
 import { motion, useInView } from 'framer-motion';
 import MagneticButton from '@/components/Common/magnetic-button';
 import Link from 'next/link';

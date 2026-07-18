@@ -2,6 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
 
+  // Pin the workspace root so Turbopack doesn't infer a parent dir that
+  // happens to contain a stray lockfile.
+  turbopack: {
+    root: __dirname,
+  },
+
   images: {
     remotePatterns: [
       {

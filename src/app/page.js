@@ -1,6 +1,4 @@
-import Head from 'next/head';
 import Page from '@/components/Page';
-
 import CustomCursor from '@/components/custom-crusor/Cursor';
 import RecentWork from '@/components/Recent-Work';
 import Hero2 from '@/components/Layout/Hero2';
@@ -13,10 +11,6 @@ export default function Home() {
     <AppContext>
       <div className="flex min-h-screen flex-col">
         <CustomCursor />
-        <Head>
-          <title>Sameer</title>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
         <Page>
           <Hero2 />
           <Wrapper>
