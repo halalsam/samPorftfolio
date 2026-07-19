@@ -22,9 +22,9 @@ const Hero2 = () => {
     <section
       ref={container}
       id="hero"
-      class="mb-[-100svh] overflow-hidden py-0"
+      className="mb-[-100svh] overflow-hidden py-0"
     >
-      <div class="section-padding  top-0 flex h-svh w-full justify-center sm:items-center ">
+      <div className="section-padding  top-0 flex h-svh w-full justify-center sm:items-center ">
         <motion.svg
           width="1186"
           height="1186"
@@ -49,8 +49,8 @@ const Hero2 = () => {
               y2="1186"
               gradientUnits="userSpaceOnUse"
             >
-              <stop stop-color="#DDDDD5"></stop>
-              <stop offset="1" stop-color="#DDDDD5" stop-opacity="0"></stop>
+              <stop stopColor="#DDDDD5"></stop>
+              <stop offset="1" stopColor="#DDDDD5" stopOpacity="0"></stop>
             </linearGradient>
           </defs>
         </motion.svg>
@@ -60,7 +60,7 @@ const Hero2 = () => {
         </div>
       </div>
       <div></div>
-      <div class="h-svh"></div>
+      <div className="h-svh"></div>
     </section>
   );
 };
@@ -75,13 +75,14 @@ const Text = ({ scrollYProgress }) => {
   const heroPara =
     "Full-stack developer & designer — apps, web apps, desktop, and the servers behind them If it runs on a screen, I can design it, build it and ship it";
   return (
-    <motion.div style={{ opacity: opacity, scale }} class=" z-10   ">
-      <div class="hero-title1 flex h-full w-full flex-col px-10 text-[35vw] leading-tight sm:mb-0 sm:items-center sm:text-[20vw]">
+    <motion.div style={{ opacity: opacity, scale }} className=" z-10   ">
+      <div className="hero-title1 flex h-full w-full flex-col px-10 text-[35vw] leading-tight sm:mb-0 sm:items-center sm:text-[20vw]">
         <MagneticButton>
           <div className="flex justify-center">
             {heroTitle.split('').map((word, index) => {
               return (
                 <motion.h1
+                  key={index}
                   style={{ y }}
                   variants={slideUpTitle}
                   initial="initial"
@@ -107,7 +108,9 @@ const Text = ({ scrollYProgress }) => {
           >
             {heroPara.split(' ').map((word, index) => {
               return (
-                <span className=" hero-para mr-1.5 inline-block">{word}</span>
+                <span key={index} className=" hero-para mr-1.5 inline-block">
+                  {word}
+                </span>
               );
             })}
           </motion.p>

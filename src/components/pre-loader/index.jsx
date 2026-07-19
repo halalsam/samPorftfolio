@@ -15,14 +15,6 @@ CustomEase.create('smooth', '0.25, 0.1, 0.25, 1');
 const DIGITS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 const CELL = 100 / DIGITS.length; // yPercent per digit cell
 
-// Manifest lines reveal as the progress value passes each threshold.
-const MANIFEST = [
-  { at: 1, label: 'DESIGN' },
-  { at: 28, label: 'DEVELOPMENT' },
-  { at: 56, label: 'MOTION' },
-  { at: 82, label: 'DEPLOYMENT' },
-];
-
 const CURVE_BULGE = 'M0 0 L100 0 Q50 100 0 0 Z';
 const CURVE_FLAT = 'M0 0 L100 0 Q50 0 0 0 Z';
 
@@ -72,7 +64,6 @@ const PreLoader = () => {
 
       const q = gsap.utils.selector(el);
       const strips = q('.pl-digit-strip'); // [hundreds, tens, ones]
-      const lineInners = q('.pl-line-inner');
       const curve = q('.pl-curve-path');
 
       const finish = () => {
@@ -123,13 +114,10 @@ const PreLoader = () => {
       gsap.set('.hero-para', { y: 100, opacity: 0 });
       gsap.set('.nav', { y: -100 });
       gsap.set('#hero', { scale: 0.8 });
-      gsap.set(q('.pl-meta'), { autoAlpha: 0, y: 14 });
-      gsap.set(q('.pl-cross'), { autoAlpha: 0, scale: 0.4 });
       gsap.set(q('.pl-boot'), { autoAlpha: 0, y: 10 });
       // y: 0 clears the px offset GSAP parses from the anti-FOUC CSS
       // transform (translateY(112%) computes to a px matrix) so it doesn't
       // stack with yPercent.
-      gsap.set(lineInners, { yPercent: 112, y: 0 });
       gsap.set(q('.pl-counter-inner'), { yPercent: 112, y: 0 });
       gsap.set(q('.pl-bar-fill'), { scaleX: 0, transformOrigin: 'left center' });
 
@@ -143,10 +131,9 @@ const PreLoader = () => {
         return;
       }
 
-      // --- Progress engine: one eased value drives the odometer, the
-      // hairline bar and the manifest reveals.
+      // --- Progress engine: one eased value drives the odometer and the
+      // hairline bar.
       const state = { v: 0 };
-      const revealed = new Array(MANIFEST.length).fill(false);
       const setBar = gsap.quickSetter(q('.pl-bar-fill'), 'scaleX');
 
       const render = () => {
@@ -160,95 +147,58 @@ const PreLoader = () => {
         gsap.set(strips[1], { yPercent: -tens * CELL });
         gsap.set(strips[2], { yPercent: -ones * CELL });
         setBar(v / 100);
-        MANIFEST.forEach((m, i) => {
-          if (!revealed[i] && v >= m.at) {
-            revealed[i] = true;
-            gsap.to(lineInners[i], {
-              yPercent: 0,
-              duration: 0.9,
-              ease: 'power4.out',
-            });
-          }
-        });
       };
 
-      const tl = gsap.timeline({ delay: 0.3, onComplete: finish });
+      const tl = gsap.timeline({ delay: 0.15, onComplete: finish });
 
-      // --- Intro: metadata, grid marks, monogram, counter mask-reveal.
-      tl.to(q('.pl-meta'), {
+      // --- Intro: boot ticker and counter mask-reveal, straight in.
+      tl.to(q('.pl-boot'), {
         autoAlpha: 1,
         y: 0,
-        duration: 0.8,
-        stagger: 0.08,
+        duration: 0.6,
         ease: 'power3.out',
+        onStart: () => {
+          showBootLine();
+          bootTimer = setInterval(showBootLine, 520);
+        },
       })
         .to(
-          q('.pl-cross'),
-          {
-            autoAlpha: 0.5,
-            scale: 1,
-            duration: 0.7,
-            stagger: 0.06,
-            ease: 'power3.out',
-          },
-          0.15
-        )
-        .to(
-          q('.pl-boot'),
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.9,
-            ease: 'power3.out',
-            onStart: () => {
-              showBootLine();
-              bootTimer = setInterval(showBootLine, 520);
-            },
-          },
-          0.2
-        )
-        .to(
           q('.pl-counter-inner'),
-          { yPercent: 0, duration: 1, ease: 'expo.out' },
-          0.35
+          { yPercent: 0, duration: 0.8, ease: 'expo.out' },
+          0.1
         )
 
         // --- Count 0 → 100 in three eased pulls with hesitations,
         // so the odometer feels like a real load, not a stopwatch.
         .to(
           state,
-          { v: 34, duration: 1.0, ease: 'power2.inOut', onUpdate: render },
-          0.75
+          { v: 34, duration: 0.8, ease: 'power2.inOut', onUpdate: render },
+          0.4
         )
         .to(state, {
           v: 68,
-          duration: 0.65,
+          duration: 0.55,
           ease: 'power2.inOut',
-          onUpdate: render,
-          delay: 0.2,
-        })
-        .to(state, {
-          v: 100,
-          duration: 0.95,
-          ease: 'power3.inOut',
           onUpdate: render,
           delay: 0.15,
         })
+        .to(state, {
+          v: 100,
+          duration: 0.8,
+          ease: 'power3.inOut',
+          onUpdate: render,
+          delay: 0.1,
+        })
 
         // --- Exit: content clears, then the curtain lifts with a curved edge.
-        .add('exit', '+=0.3')
+        .add('exit', '+=0.2')
         .to(
           q('.pl-counter-inner'),
           { yPercent: -112, duration: 0.65, ease: 'power3.in' },
           'exit'
         )
         .to(
-          lineInners,
-          { yPercent: -115, duration: 0.5, stagger: 0.05, ease: 'power3.in' },
-          'exit'
-        )
-        .to(
-          [...q('.pl-meta'), ...q('.pl-cross'), ...q('.pl-boot')],
+          q('.pl-boot'),
           { autoAlpha: 0, duration: 0.45, ease: 'power2.in' },
           'exit'
         )
@@ -340,45 +290,6 @@ const PreLoader = () => {
             printf(&quot;loading...&quot;);
           </p>
         </div>
-
-        {/* Editorial grid marks */}
-        <span className="pl-cross left-1/4 top-1/4">+</span>
-        <span className="pl-cross left-3/4 top-1/4">+</span>
-        <span className="pl-cross left-1/4 top-3/4">+</span>
-        <span className="pl-cross left-3/4 top-3/4">+</span>
-        <span className="pl-cross left-1/2 top-1/2">+</span>
-
-        {/* Corner metadata */}
-        <div className="absolute left-5 top-5 sm:left-8 sm:top-7">
-          <p className="pl-meta text-[11px] font-semibold uppercase tracking-[0.35em] text-[#e8e6e3]">
-            Sam Khan
-          </p>
-          <p className="pl-meta mt-1 text-[10px] uppercase tracking-[0.3em] text-[#b9bcc1]/60">
-            Folio — Vol. 01
-          </p>
-        </div>
-        <div className="absolute right-5 top-5 text-right sm:right-8 sm:top-7">
-          <p className="pl-meta text-[11px] font-semibold uppercase tracking-[0.35em] text-[#e8e6e3]">
-            ©2026
-          </p>
-          <p className="pl-meta mt-1 text-[10px] uppercase tracking-[0.3em] text-[#b9bcc1]/60">
-            Freelance web developer
-          </p>
-        </div>
-
-        {/* Manifest — reveals with progress */}
-        <ul className="absolute bottom-6 left-5 sm:bottom-10 sm:left-8">
-          {MANIFEST.map((m, i) => (
-            <li key={m.label} className="overflow-hidden">
-              <span className="pl-line-inner block py-[3px] text-[10px] uppercase tracking-[0.3em] text-[#b9bcc1] sm:text-[11px]">
-                <span className="mr-3 text-[#ff2b1f]">
-                  0{i + 1}
-                </span>
-                {m.label}
-              </span>
-            </li>
-          ))}
-        </ul>
 
         {/* Rolling odometer counter */}
         <div className="absolute bottom-4 right-4 overflow-hidden sm:bottom-6 sm:right-8">

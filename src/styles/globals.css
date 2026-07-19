@@ -285,13 +285,8 @@ body:has(.preloader) #hero { transform: scale(0.8); }
    the .loader spinner used in Recent-Work. Initial states here mirror the
    gsap.set() calls so there is no flash before the timeline takes over. */
 
-.preloader .pl-meta,
-.preloader .pl-cross,
 .preloader .pl-boot {
   opacity: 0;
-}
-.preloader .pl-line-inner {
-  transform: translateY(112%);
 }
 .preloader .pl-counter-inner {
   transform: translateY(112%);
@@ -340,15 +335,6 @@ body:has(.preloader) #hero { transform: scale(0.8); }
     transform: none;
     clip-path: none;
   }
-}
-
-/* Editorial crosshair marks */
-.preloader .pl-cross {
-  position: absolute;
-  transform: translate(-50%, -50%);
-  font-size: 14px;
-  font-weight: 300;
-  color: rgba(185, 188, 193, 0.55);
 }
 
 /* Rolling odometer digits: uniform masked cells, translated by yPercent

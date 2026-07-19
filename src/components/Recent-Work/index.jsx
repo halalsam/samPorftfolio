@@ -284,7 +284,7 @@ const RecentWork = () => {
               animate={headingInView ? 'open' : 'closed'}
               transition={{ ease: [0.16, 1, 0.3, 1] }}
             >
-              {char === ' ' ? ' ' : char}
+              {char === ' ' ? '' : char}
             </motion.span>
           </span>
         ))}
