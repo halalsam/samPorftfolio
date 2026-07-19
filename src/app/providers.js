@@ -5,7 +5,9 @@ export default function Providers({ children }) {
   useEffect(() => {
     (async () => {
       const LocomotiveScroll = (await import('locomotive-scroll')).default;
-      new LocomotiveScroll();
+      // Kept on window so utilities (e.g. scroll-to-top) can drive the
+      // smooth scroller instead of fighting it with native scrollTo.
+      window.__lscroll = new LocomotiveScroll();
     })();
   }, []);
 

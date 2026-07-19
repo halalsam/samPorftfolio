@@ -4,6 +4,7 @@ import Footer from '@/components/Footer';
 import { useScroll, useSpring, useTransform, motion } from 'framer-motion';
 import { useRef } from 'react';
 import PreLoader from '@/components/pre-loader/index';
+import ScrollToTop from '@/components/Common/scroll-to-top';
 
 export default function Page({ children, showPreloader = true }) {
   const container = useRef();
@@ -25,6 +26,7 @@ export default function Page({ children, showPreloader = true }) {
         <Header />
         <main className="py-2">{children}</main>
         <Footer />
+        <ScrollToTop />
       </div>
     </>
   );

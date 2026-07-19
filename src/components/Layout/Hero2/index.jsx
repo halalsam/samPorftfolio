@@ -96,14 +96,14 @@ const Text = ({ scrollYProgress }) => {
           </div>
         </MagneticButton>
 
-        <div className="hero-para1 relative flex">
+        <div className="hero-para1 relative -mt-2 flex w-full justify-center sm:-mt-6">
           <motion.p
             style={{ y }}
             variants={slideUpTitle}
             initial="initial"
             animate="open"
             exit="closed"
-            className="text-secondary-100 hero-para relative max-w-[38ch] text-wrap pl-1  text-center text-[4vw] font-medium sm:pl-0 sm:text-[2vw] lg:text-[1vw]"
+            className="text-secondary-100 hero-para relative mx-auto max-w-[44ch] text-wrap py-1 text-center text-[clamp(15px,4.2vw,20px)] font-medium leading-snug sm:max-w-[40ch] sm:text-[clamp(16px,1.5vw,24px)]"
           >
             {heroPara.split(' ').map((word, index) => {
               return (

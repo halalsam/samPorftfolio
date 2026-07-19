@@ -80,7 +80,11 @@ const PreLoader = () => {
         window.sessionStorage.setItem('preloaderPlayed', 'true');
         gsap.set(el, { display: 'none' });
         gsap.set('.progress', { autoAlpha: 1 });
+        document.body.style.overflow = '';
       };
+
+      // No scrolling while the boot sequence holds the screen.
+      document.body.style.overflow = 'hidden';
 
       // --- Glitch boot text: cycle BOOT_LINES, scrambling each line in
       // from random glyphs before it settles.
@@ -303,6 +307,7 @@ const PreLoader = () => {
 
     return () => {
       stopBoot();
+      document.body.style.overflow = '';
       ctx.revert();
     };
   }, []);
