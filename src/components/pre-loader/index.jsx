@@ -26,12 +26,34 @@ const MANIFEST = [
 const CURVE_BULGE = 'M0 0 L100 0 Q50 100 0 0 Z';
 const CURVE_FLAT = 'M0 0 L100 0 Q50 0 0 0 Z';
 
+// "loading" as it's written close to the metal — the glitch text cycles
+// through these while the odometer counts.
+const BOOT_LINES = [
+  { lang: 'x86 ASM', code: "msg db 'LOADING$'  ; int 21h" },
+  { lang: 'C', code: 'printf("loading...\\n");' },
+  { lang: 'C++', code: 'std::cout << "loading";' },
+  { lang: 'RUST', code: 'println!("loading");' },
+  { lang: 'GO', code: 'fmt.Println("loading")' },
+  { lang: 'FORTRAN 77', code: "WRITE(*,*) 'LOADING'" },
+  { lang: 'COBOL', code: "DISPLAY 'LOADING'." },
+  { lang: 'BINARY', code: '01101100 01101111 01100001 01100100' },
+  { lang: 'HEX DUMP', code: '4C 4F 41 44 49 4E 47 2E 2E 2E' },
+];
+const SCRAMBLE_CHARS = '!<>-_\\/[]{}=+*^?#@%&$;:~01';
+
 const PreLoader = () => {
   const root = useRef(null);
 
   useEffect(() => {
     const el = root.current;
     if (!el) return;
+
+    let bootTimer = null;
+    let scrambleTimer = null;
+    const stopBoot = () => {
+      clearInterval(bootTimer);
+      clearInterval(scrambleTimer);
+    };
 
     const alreadyPlayed =
       window.sessionStorage.getItem('preloaderPlayed') === 'true';
@@ -54,9 +76,38 @@ const PreLoader = () => {
       const curve = q('.pl-curve-path');
 
       const finish = () => {
+        stopBoot();
         window.sessionStorage.setItem('preloaderPlayed', 'true');
         gsap.set(el, { display: 'none' });
         gsap.set('.progress', { autoAlpha: 1 });
+      };
+
+      // --- Glitch boot text: cycle BOOT_LINES, scrambling each line in
+      // from random glyphs before it settles.
+      const codeEl = q('.pl-boot-code')[0];
+      const langEl = q('.pl-boot-lang')[0];
+      let lineIdx = 0;
+      const showBootLine = () => {
+        const line = BOOT_LINES[lineIdx % BOOT_LINES.length];
+        lineIdx += 1;
+        langEl.textContent = `stdout — ${line.lang}`;
+        const target = line.code;
+        let frame = 0;
+        const frames = 9;
+        clearInterval(scrambleTimer);
+        scrambleTimer = setInterval(() => {
+          frame += 1;
+          const reveal = Math.floor((frame / frames) * target.length);
+          let out = '';
+          for (let i = 0; i < target.length; i += 1) {
+            out +=
+              i < reveal || target[i] === ' '
+                ? target[i]
+                : SCRAMBLE_CHARS[(Math.random() * SCRAMBLE_CHARS.length) | 0];
+          }
+          codeEl.textContent = out;
+          if (frame >= frames) clearInterval(scrambleTimer);
+        }, 32);
       };
 
       // The scroll-progress bar sits above the overlay (z-9999) — park it
@@ -70,7 +121,7 @@ const PreLoader = () => {
       gsap.set('#hero', { scale: 0.8 });
       gsap.set(q('.pl-meta'), { autoAlpha: 0, y: 14 });
       gsap.set(q('.pl-cross'), { autoAlpha: 0, scale: 0.4 });
-      gsap.set(q('.pl-monogram'), { autoAlpha: 0, scale: 1 });
+      gsap.set(q('.pl-boot'), { autoAlpha: 0, y: 10 });
       // y: 0 clears the px offset GSAP parses from the anti-FOUC CSS
       // transform (translateY(112%) computes to a px matrix) so it doesn't
       // stack with yPercent.
@@ -139,14 +190,17 @@ const PreLoader = () => {
           0.15
         )
         .to(
-          q('.pl-monogram'),
-          { autoAlpha: 1, duration: 1.4, ease: 'power2.out' },
-          0.2
-        )
-        // Slow drift for the whole load — subtle depth behind the numbers.
-        .to(
-          q('.pl-monogram'),
-          { scale: 1.08, duration: 4.6, ease: 'none' },
+          q('.pl-boot'),
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.9,
+            ease: 'power3.out',
+            onStart: () => {
+              showBootLine();
+              bootTimer = setInterval(showBootLine, 520);
+            },
+          },
           0.2
         )
         .to(
@@ -190,7 +244,7 @@ const PreLoader = () => {
           'exit'
         )
         .to(
-          [...q('.pl-meta'), ...q('.pl-cross'), ...q('.pl-monogram')],
+          [...q('.pl-meta'), ...q('.pl-cross'), ...q('.pl-boot')],
           { autoAlpha: 0, duration: 0.45, ease: 'power2.in' },
           'exit'
         )
@@ -247,7 +301,10 @@ const PreLoader = () => {
         );
     });
 
-    return () => ctx.revert();
+    return () => {
+      stopBoot();
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -269,11 +326,14 @@ const PreLoader = () => {
       <div className="absolute inset-0 overflow-hidden">
         <div className="pl-grain" />
 
-        {/* Ghost monogram */}
-        <div
-          className={`pl-monogram ${thunder.className} pointer-events-none absolute inset-0 flex items-center justify-center text-[58vh] leading-none`}
-        >
-          SK<span className="mt-[10vh] text-[10vh]">®</span>
+        {/* Glitch boot text — "loading" straight from the metal */}
+        <div className="pl-boot pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-3 px-4 text-center">
+          <p className="pl-boot-lang font-mono text-[10px] uppercase tracking-[0.4em] text-[#ff2b1f]">
+            stdout — x86 ASM
+          </p>
+          <p className="pl-boot-code font-mono text-[clamp(14px,3.4vw,30px)] text-[#e8e6e3]">
+            printf(&quot;loading...&quot;);
+          </p>
         </div>
 
         {/* Editorial grid marks */}

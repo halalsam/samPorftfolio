@@ -86,7 +86,7 @@ const Logos = ({ scrollProgress }) => {
             </Link>
           </div>
           <div className="py-3 text-sm sm:text-lg">
-            <p>©2024 Sam, All Rights Reserved • Credits</p>
+            <p>©2026 Sam, All Rights Reserved • Credits</p>
           </div>
         </div>
       </motion.div>

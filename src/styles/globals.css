@@ -287,7 +287,7 @@ body:has(.preloader) #hero { transform: scale(0.8); }
 
 .preloader .pl-meta,
 .preloader .pl-cross,
-.preloader .pl-monogram {
+.preloader .pl-boot {
   opacity: 0;
 }
 .preloader .pl-line-inner {
@@ -301,10 +301,45 @@ body:has(.preloader) #hero { transform: scale(0.8); }
   transform-origin: left center;
 }
 
-/* Ghost monogram: outlined Thunder glyphs, barely-there */
-.preloader .pl-monogram {
-  color: transparent;
-  -webkit-text-stroke: 1px rgba(232, 230, 227, 0.09);
+/* Glitch boot text — RGB-split flicker + occasional clip jump. The line
+   content itself is scrambled from JS; this layer adds the CRT wobble. */
+.preloader .pl-boot-code {
+  position: relative;
+  animation: pl-glitch 2.4s steps(1) infinite;
+}
+
+@keyframes pl-glitch {
+  0%,
+  86% {
+    text-shadow: none;
+    transform: none;
+    clip-path: none;
+  }
+  87% {
+    text-shadow:
+      2px 0 rgba(255, 43, 31, 0.85),
+      -2px 0 rgba(60, 220, 255, 0.7);
+    transform: translateX(2px) skewX(4deg);
+  }
+  90% {
+    text-shadow:
+      -3px 0 rgba(255, 43, 31, 0.85),
+      3px 0 rgba(60, 220, 255, 0.7);
+    transform: translateX(-3px);
+    clip-path: inset(20% 0 45% 0);
+  }
+  93% {
+    text-shadow:
+      1px 0 rgba(255, 43, 31, 0.85),
+      -1px 0 rgba(60, 220, 255, 0.7);
+    transform: translateX(1px) skewX(-3deg);
+    clip-path: inset(60% 0 5% 0);
+  }
+  96% {
+    text-shadow: none;
+    transform: none;
+    clip-path: none;
+  }
 }
 
 /* Editorial crosshair marks */
@@ -359,6 +394,50 @@ body:has(.preloader) #hero { transform: scale(0.8); }
   75% { transform: translate(1%, -2%); }
   87.5% { transform: translate(-2%, 2%); }
   100% { transform: translate(0, 0); }
+}
+
+/* Tech-stack marquee — two seamless rows, opposite directions. Each track
+   holds two copies of its row; -50% loops without a visible seam. */
+.stack-marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+}
+.stack-track {
+  display: flex;
+  width: max-content;
+  animation: stack-scroll 36s linear infinite;
+}
+.stack-track-reverse {
+  animation-direction: reverse;
+}
+.stack-marquee:hover .stack-track {
+  animation-play-state: paused;
+}
+@keyframes stack-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stack-track {
+    animation: none;
+  }
+  .preloader .pl-boot-code {
+    animation: none;
+  }
 }
 
 .reveal {

@@ -73,7 +73,7 @@ const Text = ({ scrollYProgress }) => {
   const y = useTransform(scrollYProgress, [0, 0.8], [3, 1]);
   const heroTitle = 'SAM';
   const heroPara =
-    "A passionate React/Next developer & web designer Let's collaborate to elevate your digital footprint with style and innovation";
+    "Full-stack developer & designer — apps, web apps, desktop, and the servers behind them If it runs on a screen, I can design it, build it and ship it";
   return (
     <motion.div style={{ opacity: opacity, scale }} class=" z-10   ">
       <div class="hero-title1 flex h-full w-full flex-col px-10 text-[35vw] leading-tight sm:mb-0 sm:items-center sm:text-[20vw]">
