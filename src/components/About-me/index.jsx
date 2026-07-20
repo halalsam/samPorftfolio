@@ -1,6 +1,12 @@
 'use client';
 import { slideUp, slideUpTitle } from '@/animation/anim';
-import { useScroll, useTransform, motion, useInView } from 'framer-motion';
+import {
+  useScroll,
+  useTransform,
+  motion,
+  useInView,
+  useReducedMotion,
+} from 'framer-motion';
 import Image from 'next/image';
 import React, { useRef } from 'react';
 import { PiArrowBendRightDownThin } from 'react-icons/pi';
@@ -98,39 +104,52 @@ const artifactPaths = {
     'M140 140C140 140 152.5 106.527 152.5 82.8571C152.5 59.1878 146.904 40 140 40C133.096 40 127.5 59.1878 127.5 82.8571C127.5 106.527 140 140 140 140ZM140 140C140 140 154.831 172.508 171.567 189.245C188.304 205.982 205.829 215.592 210.711 210.711C215.592 205.829 205.982 188.304 189.245 171.567C172.508 154.831 140 140 140 140ZM140 140C140 140 173.474 127.5 197.143 127.5C220.812 127.5 240 133.096 240 140C240 146.904 220.812 152.5 197.143 152.5C173.474 152.5 140 140 140 140ZM140 140C140 140 107.492 154.831 90.755 171.567C74.0183 188.304 64.4077 205.829 69.2893 210.711C74.1709 215.592 91.696 205.982 108.433 189.245C125.17 172.508 140 140 140 140ZM140 140C140.028 140.074 152.5 173.5 152.5 197.143C152.5 220.812 146.904 240 140 240C133.096 240 127.5 220.812 127.5 197.143C127.5 173.474 140 140 140 140ZM140 140C140 140 106.527 127.5 82.8571 127.5C59.1878 127.5 40 133.096 40 140C40 146.904 59.1878 152.5 82.8571 152.5C106.527 152.5 140 140 140 140ZM140 140C140 140 172.508 125.169 189.245 108.433C205.982 91.6959 215.592 74.1708 210.711 69.2893C205.829 64.4077 188.304 74.0183 171.567 90.755C154.831 107.492 140 140 140 140ZM108.433 90.755C125.17 107.492 140 140 140 140C140 140 107.492 125.17 90.7551 108.433C74.0183 91.696 64.4078 74.1709 69.2893 69.2893C74.1709 64.4078 91.696 74.0183 108.433 90.755Z',
 };
 
-const MarqueeRow = ({ items, reverse }) => (
-  <div className="stack-marquee border-y border-[#b9bcc11f] py-5 sm:py-8">
-    <div className={`stack-track ${reverse ? 'stack-track-reverse' : ''}`}>
-      {[0, 1].map((copy) => (
-        <div
-          key={copy}
-          className="flex shrink-0 items-center"
-          aria-hidden={copy === 1}
-        >
-          {items.map((item) => (
-            <img
-              key={`${copy}-${item.brand}`}
-              src={logoSrc(item.brand)}
-              alt={copy === 0 ? item.label : ''}
-              title={item.label}
-              loading="lazy"
-              className="mx-4 h-14 w-14 sm:mx-6 sm:h-20 sm:w-20"
-            />
-          ))}
-        </div>
-      ))}
+const MarqueeRow = ({ items, reverse }) => {
+  // Pause the CSS marquee while the row is off-screen — otherwise it
+  // animates for the whole life of the page.
+  const rowRef = useRef(null);
+  const inView = useInView(rowRef);
+  return (
+    <div
+      ref={rowRef}
+      className={`stack-marquee border-y border-[#b9bcc11f] py-5 sm:py-8 ${
+        inView ? '' : 'stack-paused'
+      }`}
+    >
+      <div className={`stack-track ${reverse ? 'stack-track-reverse' : ''}`}>
+        {[0, 1].map((copy) => (
+          <div
+            key={copy}
+            className="flex shrink-0 items-center"
+            aria-hidden={copy === 1}
+          >
+            {items.map((item) => (
+              <img
+                key={`${copy}-${item.brand}`}
+                src={logoSrc(item.brand)}
+                alt={copy === 0 ? item.label : ''}
+                title={item.label}
+                loading="lazy"
+                className="mx-4 h-14 w-14 sm:mx-6 sm:h-20 sm:w-20"
+              />
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const ServiceCard = ({ service, index, total, stackProgress }) => {
-  const cardRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ['start end', 'end start'],
-  });
-  const artifactY = useTransform(scrollYProgress, [0, 1], [60, -60]);
-  const artifactRotate = useTransform(scrollYProgress, [0, 1], [0, 45]);
+  const reduceMotion = useReducedMotion();
+
+  // Artifact parallax rides the shared stack progress — one scroll
+  // subscription for the whole stack instead of one per card. It sweeps the
+  // full stack scroll, and each card only shows a slice of that, so the
+  // drift stays slow and parallax-like instead of sprinting through the
+  // card's own segment.
+  const artifactY = useTransform(stackProgress, [0, 1], [100, -100]);
+  const artifactRotate = useTransform(stackProgress, [0, 1], [0, 45]);
 
   // Depth: while later cards slide over this one, it recedes — scales down
   // and dims, so the stack reads as layers instead of a flat pile.
@@ -140,17 +159,27 @@ const ServiceCard = ({ service, index, total, stackProgress }) => {
     [index / total, 1],
     [1, targetScale]
   );
-  const brightness = useTransform(
-    stackProgress,
-    [index / total, 1],
-    [1, index === total - 1 ? 1 : 0.5]
-  );
-  const filter = useTransform(brightness, (b) => `brightness(${b})`);
+  // Dimming is a black overlay animating opacity — compositor-only, unlike
+  // a brightness() filter which repaints the whole card every scroll frame.
+  // Each covering card darkens this one a step further, and the ramp runs
+  // only while that card is sliding over — cards dim one by one, deepest
+  // darkest, top card untouched.
+  const coversAbove = total - 1 - index;
+  const dimRange = coversAbove
+    ? Array.from({ length: coversAbove + 1 }, (_, c) => (index + 1 + c) / total)
+    : [0, 1];
+  const dimLevels = coversAbove
+    ? Array.from({ length: coversAbove + 1 }, (_, c) => c * 0.22)
+    : [0, 0];
+  const dimOpacity = useTransform(stackProgress, dimRange, dimLevels);
 
   return (
     <motion.div
-      ref={cardRef}
-      style={{ scale, filter, transformOrigin: 'top center' }}
+      style={
+        reduceMotion
+          ? undefined
+          : { scale, transformOrigin: 'top center', willChange: 'transform' }
+      }
       className={`sticky ${service.top} overflow-hidden rounded-3xl border border-[#b9bcc133] bg-[#000] px-4 py-8 sm:px-10 sm:py-10`}
     >
       <h3 className="text-left text-[6.5vw] font-bold leading-none sm:text-[4.5vw] md:text-[3.5vw]">
@@ -168,11 +197,17 @@ const ServiceCard = ({ service, index, total, stackProgress }) => {
           ))}
         </div>
         <motion.span
-          style={{ y: artifactY }}
+          style={
+            reduceMotion ? undefined : { y: artifactY, willChange: 'transform' }
+          }
           className="pointer-events-none absolute bottom-0 -z-10 flex w-full items-end justify-end opacity-30"
         >
           <motion.svg
-            style={{ rotate: artifactRotate }}
+            style={
+              reduceMotion
+                ? undefined
+                : { rotate: artifactRotate, willChange: 'transform' }
+            }
             width="280"
             height="280"
             viewBox="0 0 280 280"
@@ -188,6 +223,10 @@ const ServiceCard = ({ service, index, total, stackProgress }) => {
           </motion.svg>
         </motion.span>
       </div>
+      <motion.div
+        style={{ opacity: reduceMotion ? 0 : dimOpacity }}
+        className="pointer-events-none absolute inset-0 bg-black"
+      />
     </motion.div>
   );
 };
@@ -218,10 +257,10 @@ const AboutMe = () => {
   const aboutMe = useRef(null);
   const whatIdoref = useRef(null);
   const stackRef = useRef(null);
-  const isInView = useInView(description);
-  const aboutInView = useInView(aboutMe);
-  const whatIdoInView = useInView(whatIdoref);
-  const stackInView = useInView(stackRef);
+  const isInView = useInView(description, { once: true });
+  const aboutInView = useInView(aboutMe, { once: true });
+  const whatIdoInView = useInView(whatIdoref, { once: true });
+  const stackInView = useInView(stackRef, { once: true });
 
   return (
     <>
@@ -242,7 +281,6 @@ const AboutMe = () => {
                   custom={index}
                   animate={aboutInView ? 'open' : 'closed'}
                   transition={{ ease: [0.16, 1, 0.3, 1] }}
-                  viewport={{ once: true }}
                 >
                   {word}
                 </motion.span>
@@ -253,7 +291,7 @@ const AboutMe = () => {
         <div className=" flex w-full justify-center sm:mt-14">
           <div className="relative  flex justify-center sm:gap-x-24   ">
             <motion.svg
-              style={{ rotate: rotateNeg }}
+              style={{ rotate: rotateNeg, willChange: 'transform' }}
               width="600"
               height="600"
               viewBox="0 0 280 280"
@@ -272,7 +310,7 @@ const AboutMe = () => {
               <defs></defs>
             </motion.svg>
             <motion.svg
-              style={{ rotate: rotate, y: y }}
+              style={{ rotate: rotate, y: y, willChange: 'transform' }}
               width="280"
               height="280"
               viewBox="0 0 280 280"
@@ -309,7 +347,7 @@ const AboutMe = () => {
         <div className="mb-14 flex">
           <div className="hidden w-[50%] sm:block">
             <motion.svg
-              style={{ rotate: rotate, y: y }}
+              style={{ rotate: rotate, y: y, willChange: 'transform' }}
               width="280"
               height="280"
               viewBox="0 0 280 280"
@@ -358,7 +396,6 @@ const AboutMe = () => {
                     variants={slideUp}
                     custom={index}
                     animate={isInView ? 'open' : 'closed'}
-                    viewport={{ once: true }}
                   >
                     {word}
                   </motion.span>

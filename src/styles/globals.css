@@ -409,7 +409,8 @@ body:has(.preloader) #hero { transform: scale(0.8); }
 .stack-track-reverse {
   animation-direction: reverse;
 }
-.stack-marquee:hover .stack-track {
+.stack-marquee:hover .stack-track,
+.stack-marquee.stack-paused .stack-track {
   animation-play-state: paused;
 }
 @keyframes stack-scroll {

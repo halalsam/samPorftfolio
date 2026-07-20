@@ -32,7 +32,7 @@ const Hero2 = () => {
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           className=" pointer-events-none absolute bottom-[12%] z-0 w-[70%] opacity-5 sm:w-3/5 lg:w-2/5"
-          style={{ y, scale: scale }}
+          style={{ y, scale, willChange: 'transform' }}
         >
           <circle
             cx="593"
@@ -73,9 +73,12 @@ const Text = ({ scrollYProgress }) => {
   const y = useTransform(scrollYProgress, [0, 0.8], [3, 1]);
   const heroTitle = 'SAM';
   const heroPara =
-    "Full-stack developer & designer — apps, web apps, desktop, and the servers behind them If it runs on a screen, I can design it, build it and ship it";
+    'Full-stack developer & designer — apps, web apps, desktop, and the servers behind them If it runs on a screen, I can design it, build it and ship it';
   return (
-    <motion.div style={{ opacity: opacity, scale }} className=" z-10   ">
+    <motion.div
+      style={{ opacity, scale, y, willChange: 'transform, opacity' }}
+      className=" z-10   "
+    >
       <div className="hero-title1 flex h-full w-full flex-col px-10 text-[35vw] leading-tight sm:mb-0 sm:items-center sm:text-[20vw]">
         <MagneticButton>
           <div className="flex justify-center">
@@ -83,7 +86,6 @@ const Text = ({ scrollYProgress }) => {
               return (
                 <motion.h1
                   key={index}
-                  style={{ y }}
                   variants={slideUpTitle}
                   initial="initial"
                   animate="open"
@@ -99,7 +101,6 @@ const Text = ({ scrollYProgress }) => {
 
         <div className="hero-para1 relative -mt-2 flex w-full justify-center sm:-mt-6">
           <motion.p
-            style={{ y }}
             variants={slideUpTitle}
             initial="initial"
             animate="open"

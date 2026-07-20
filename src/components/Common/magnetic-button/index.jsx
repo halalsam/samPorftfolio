@@ -1,34 +1,49 @@
 'use client';
-import React, { useEffect, useRef } from "react"
-import gsap from "gsap"
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
 
 export default function MagneticButton({ children }) {
-  const magnetic = useRef(null)
+  const magnetic = useRef(null);
 
   useEffect(() => {
-    const xTo = gsap.quickTo(magnetic.current, "x", {
+    const el = magnetic.current;
+    const xTo = gsap.quickTo(el, 'x', {
       duration: 1,
-      ease: "elastic.out(1, 0.3)",
-    })
-    const yTo = gsap.quickTo(magnetic.current, "y", {
+      ease: 'elastic.out(1, 0.3)',
+    });
+    const yTo = gsap.quickTo(el, 'y', {
       duration: 1,
-      ease: "elastic.out(1, 0.3)",
-    })
+      ease: 'elastic.out(1, 0.3)',
+    });
 
-    magnetic.current.addEventListener("mousemove", (e) => {
-      const { clientX, clientY } = e
-      const { height, width, left, top } =
-        magnetic.current.getBoundingClientRect()
-      const x = clientX - (left + width / 2)
-      const y = clientY - (top + height / 2)
-      xTo(x * 0.35)
-      yTo(y * 0.35)
-    })
-    magnetic.current.addEventListener("mouseleave", (e) => {
-      xTo(0)
-      yTo(0)
-    })
-  }, [])
+    // Bounds are measured once per hover — getBoundingClientRect on every
+    // mousemove forces a layout pass per event.
+    let bounds = null;
+    const onEnter = () => {
+      bounds = el.getBoundingClientRect();
+    };
+    const onMove = (e) => {
+      if (!bounds) bounds = el.getBoundingClientRect();
+      const x = e.clientX - (bounds.left + bounds.width / 2);
+      const y = e.clientY - (bounds.top + bounds.height / 2);
+      xTo(x * 0.35);
+      yTo(y * 0.35);
+    };
+    const onLeave = () => {
+      bounds = null;
+      xTo(0);
+      yTo(0);
+    };
 
-  return React.cloneElement(children, { ref: magnetic })
+    el.addEventListener('mouseenter', onEnter);
+    el.addEventListener('mousemove', onMove);
+    el.addEventListener('mouseleave', onLeave);
+    return () => {
+      el.removeEventListener('mouseenter', onEnter);
+      el.removeEventListener('mousemove', onMove);
+      el.removeEventListener('mouseleave', onLeave);
+    };
+  }, []);
+
+  return React.cloneElement(children, { ref: magnetic });
 }
