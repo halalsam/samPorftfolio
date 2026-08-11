@@ -32,7 +32,7 @@
     "sass": "^1.71.1",
     "tailwind-merge": "^2.5.3",
     "tailwindcss-animate": "^1.0.7",
-    "googleapis": "^174.0.1",
+    "googleapis": "^174.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.13",
