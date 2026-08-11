@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { submitReview, type ReviewFormState } from "@/actions/review.actions.ts";
+import { submitReview, type ReviewFormState } from "@/actions/review.actions";
 
 const initialState: ReviewFormState = { status: "idle" };
 
