@@ -24,20 +24,14 @@ const Hero2 = () => {
       id="hero"
       className="mb-[-100svh] overflow-hidden py-0"
     >
-      <div className="section-padding relative top-0 flex h-svh w-full justify-center sm:items-center">
-        {/* The blob used to keep its 1186px height attribute while CSS set
-            only the width, giving a tall mostly-empty box with the circle
-            centred 593px above its bottom edge. It is now a square box whose
-            bottom offset (12% + 593px - half its width) keeps the circle in
-            the same spot. The relative parent also lets the section's
-            overflow-hidden clip it, so the scaled-up blob can no longer push
-            the page sideways on phones. */}
+      <div className="section-padding  top-0 flex h-svh w-full justify-center sm:items-center ">
         <motion.svg
+          width="1186"
+          height="1186"
           viewBox="0 0 1186 1186"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-          className="pointer-events-none absolute bottom-[calc(12%+593px-35vw)] z-0 aspect-square h-auto w-[70%] opacity-5 sm:bottom-[calc(12%+593px-30vw)] sm:w-3/5 lg:bottom-[calc(12%+593px-20vw)] lg:w-2/5"
+          className=" pointer-events-none absolute bottom-[12%] z-0 w-[70%] opacity-5 sm:w-3/5 lg:w-2/5"
           style={{ y, scale, willChange: 'transform' }}
         >
           <circle
