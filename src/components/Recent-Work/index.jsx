@@ -67,7 +67,7 @@ const TICKER = [
 const EASE = [0.16, 1, 0.3, 1];
 
 const focusRing =
-  'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C6F432]';
+  'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ff0000]';
 
 const ArrowUpRight = ({ size = 16, strokeWidth = 2, className }) => (
   <svg
@@ -99,7 +99,7 @@ const GridView = () => (
       <ProjectLink
         key={project.key}
         project={project}
-        className={`group flex min-w-0 flex-col gap-5 text-[#EDEDE6] ${focusRing} ${
+        className={`group flex min-w-0 flex-col gap-5 text-[#b9bcc1] ${focusRing} ${
           index % 2 === 1 ? 'min-[960px]:translate-y-40' : ''
         }`}
       >
@@ -113,7 +113,7 @@ const GridView = () => (
               className="object-cover"
             />
           </div>
-          <span className="pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 scale-[.6] items-center gap-2 whitespace-nowrap rounded-full bg-[#C6F432] px-6 py-4 text-[15px] font-bold text-[#0A0A0A] opacity-0 [transition:opacity_.4s_ease,transform_.7s_cubic-bezier(.16,1,.3,1)] [@media(hover:hover)]:group-hover:scale-100 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-focus-visible:scale-100 [@media(hover:hover)]:group-focus-visible:opacity-100">
+          <span className="pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 scale-[.6] items-center gap-2 whitespace-nowrap rounded-full bg-[#ff0000] px-6 py-4 text-base font-bold text-[#0A0A0A] opacity-0 [transition:opacity_.4s_ease,transform_.7s_cubic-bezier(.16,1,.3,1)] [@media(hover:hover)]:group-hover:scale-100 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-focus-visible:scale-100 [@media(hover:hover)]:group-focus-visible:opacity-100">
             View project
             <ArrowUpRight />
           </span>
@@ -121,16 +121,16 @@ const GridView = () => (
 
         <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3 pt-1">
           <div className="flex min-w-0 flex-col gap-2 max-[560px]:w-full">
-            <span className="text-[clamp(24px,2.4vw,32px)] font-bold leading-none tracking-[-0.025em] transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none [@media(hover:hover)]:group-hover:translate-x-2">
+            <span className="text-2xl font-bold leading-none sm:text-3xl transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none [@media(hover:hover)]:group-hover:translate-x-2">
               {project.name}
             </span>
-            <span className="text-[15px] text-[#8C8C86]">{project.blurb}</span>
+            <span className="text-base text-[#b9bcc1]/60">{project.blurb}</span>
           </div>
           <div className="flex flex-col items-end gap-2.5 max-[560px]:flex-row max-[560px]:flex-wrap max-[560px]:items-start">
             <span className="rounded-full border border-[#2E2E2E] px-3 py-1.5 text-xs uppercase tracking-[0.08em]">
               {project.kind}
             </span>
-            <span className="text-[13px] text-[#8C8C86]">{project.tags}</span>
+            <span className="text-sm text-[#b9bcc1]/60">{project.tags}</span>
           </div>
         </div>
       </ProjectLink>
@@ -167,7 +167,7 @@ const ListView = () => {
             onMouseEnter={() => setActive(index)}
             onFocus={() => setActive(index)}
             className={`grid grid-cols-[minmax(0,1fr)_auto_28px] items-center gap-x-8 gap-y-1.5 border-t border-[#232323] py-[clamp(20px,3vw,32px)] transition-colors duration-300 max-[959px]:grid-cols-[88px_minmax(0,1fr)_24px] max-[959px]:gap-x-4 ${focusRing} ${
-              dimmed ? 'text-[#6E6E69]' : 'text-[#EDEDE6]'
+              dimmed ? 'text-[#b9bcc1]/40' : 'text-[#b9bcc1]'
             }`}
           >
             <span
@@ -183,21 +183,21 @@ const ListView = () => {
               />
             </span>
             <span
-              className={`min-w-0 text-[clamp(28px,5.5vw,88px)] font-bold leading-none tracking-[-0.04em] transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none max-[959px]:col-start-2 max-[959px]:row-start-1 max-[959px]:!translate-x-0 ${
+              className={`min-w-0 text-[6.5vw] font-bold leading-none sm:text-[4.5vw] md:text-[3.5vw] transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none max-[959px]:col-start-2 max-[959px]:row-start-1 max-[959px]:!translate-x-0 ${
                 isActive ? 'translate-x-7' : ''
               }`}
             >
               {project.name}
             </span>
-            <span className="flex flex-col items-end gap-1.5 text-sm text-[#8C8C86] max-[959px]:col-start-2 max-[959px]:row-start-2 max-[959px]:flex-row max-[959px]:flex-wrap max-[959px]:items-start max-[959px]:gap-x-2.5 max-[959px]:gap-y-1">
-              <span className="text-[#EDEDE6]">{project.kind}</span>
+            <span className="flex flex-col items-end gap-1.5 text-sm text-[#b9bcc1]/60 max-[959px]:col-start-2 max-[959px]:row-start-2 max-[959px]:flex-row max-[959px]:flex-wrap max-[959px]:items-start max-[959px]:gap-x-2.5 max-[959px]:gap-y-1">
+              <span className="text-[#b9bcc1]">{project.kind}</span>
               <span>{project.tags}</span>
             </span>
             <ArrowUpRight
               size={28}
               strokeWidth={1.6}
               className={`transition-colors duration-300 max-[959px]:col-start-3 max-[959px]:row-span-2 max-[959px]:row-start-1 ${
-                isActive ? 'text-[#C6F432]' : 'text-[#6E6E69]'
+                isActive ? 'text-[#ff0000]' : 'text-[#b9bcc1]/40'
               }`}
             />
           </ProjectLink>
@@ -241,11 +241,11 @@ const RecentWork = () => {
   return (
     <section
       id="work"
-      className="-mx-10 overflow-hidden px-[clamp(20px,4.5vw,64px)] pt-[clamp(64px,9vw,96px)] text-[#EDEDE6]"
+      className="-mx-10 overflow-hidden px-[clamp(20px,4.5vw,64px)] pt-[clamp(64px,9vw,96px)] text-[#b9bcc1]"
     >
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#232323] pb-5">
-        <div className="flex items-center gap-3 text-[13px] uppercase tracking-[0.08em] text-[#8C8C86]">
-          <span className="h-2 w-2 rounded-full bg-[#C6F432]" />
+        <div className="flex items-center gap-3 text-sm uppercase tracking-[0.08em] text-[#b9bcc1]/60">
+          <span className="h-2 w-2 rounded-full bg-[#ff0000]" />
           <span>Projects</span>
         </div>
         <div
@@ -261,8 +261,8 @@ const RecentWork = () => {
               onClick={() => setView(id)}
               className={`min-h-[44px] rounded-full px-5 text-sm font-medium transition-colors duration-300 max-[560px]:flex-1 ${focusRing} ${
                 view === id
-                  ? 'bg-[#EDEDE6] text-[#0A0A0A]'
-                  : 'bg-transparent text-[#EDEDE6]'
+                  ? 'bg-[#b9bcc1] text-[#0A0A0A]'
+                  : 'bg-transparent text-[#b9bcc1]'
               }`}
             >
               {label}
@@ -272,18 +272,18 @@ const RecentWork = () => {
       </div>
 
       <div className="flex flex-wrap items-end justify-between gap-[clamp(28px,4vw,40px)] pb-[clamp(56px,8vw,96px)] pt-[clamp(40px,7vw,72px)]">
-        <h2 className="text-[clamp(64px,15vw,220px)] font-bold leading-[0.84] tracking-[-0.055em]">
+        <h2 className="text-[12vw] font-bold leading-none sm:text-[8vw]">
           Selected
           <br />
           Work
         </h2>
         <div className="flex max-w-[380px] flex-col gap-7">
-          <p className="text-[clamp(16px,1.6vw,19px)] leading-normal text-[#B4B4AE]">
+          <p className="text-base font-medium text-[#b9bcc1]/80">
             A handful of storefronts, products and tools I’ve designed and
             shipped — built for speed, polish and the small details that make
             people stay.
           </p>
-          <div className="flex items-center gap-2.5 text-[13px] uppercase tracking-[0.08em] text-[#8C8C86]">
+          <div className="flex items-center gap-2.5 text-sm uppercase tracking-[0.08em] text-[#b9bcc1]/60">
             <span>Hover to preview</span>
             <svg
               width="16"
@@ -305,14 +305,14 @@ const RecentWork = () => {
       {view === 'grid' ? <GridView /> : <ListView />}
 
       <div className="flex flex-wrap items-center justify-between gap-10 pb-[clamp(72px,10vw,120px)] pt-[clamp(96px,13vw,160px)]">
-        <p className="max-w-[900px] text-[clamp(36px,6vw,96px)] font-bold leading-[0.95] tracking-[-0.045em]">
+        <p className="max-w-[900px] text-[6.5vw] font-bold leading-none sm:text-[4.5vw] md:text-[3.5vw]">
           Got a project in mind?
           <br />
-          <span className="text-[#8C8C86]">Let’s build it properly.</span>
+          <span className="text-[#b9bcc1]/60">Let’s build it properly.</span>
         </p>
         <a
           href="mailto:05sameerk@gmail.com"
-          className={`flex h-[180px] w-[180px] flex-col items-center justify-center gap-2 rounded-full bg-[#C6F432] text-[17px] font-bold text-[#0A0A0A] transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none max-[560px]:h-[140px] max-[560px]:w-[140px] max-[560px]:text-[15px] [@media(hover:hover)]:hover:-rotate-6 [@media(hover:hover)]:hover:scale-[1.08] ${focusRing}`}
+          className={`flex h-[180px] w-[180px] flex-col items-center justify-center gap-2 rounded-full bg-[#ff0000] text-lg font-bold text-[#0A0A0A] transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none max-[560px]:h-[140px] max-[560px]:w-[140px] max-[560px]:text-base [@media(hover:hover)]:hover:-rotate-6 [@media(hover:hover)]:hover:scale-[1.08] ${focusRing}`}
         >
           <ArrowUpRight size={28} />
           <span>Let’s talk</span>
@@ -331,10 +331,10 @@ const RecentWork = () => {
           {[...TICKER, ...TICKER].map((word, index) => (
             <span
               key={index}
-              className="flex items-center gap-[clamp(20px,3vw,40px)] whitespace-nowrap pr-[clamp(20px,3vw,40px)] text-[clamp(32px,4.5vw,56px)] font-bold tracking-[-0.035em]"
+              className="flex items-center gap-[clamp(20px,3vw,40px)] whitespace-nowrap pr-[clamp(20px,3vw,40px)] text-[6.5vw] font-bold leading-none sm:text-[4.5vw] md:text-[3.5vw]"
             >
               <span>{word}</span>
-              <span className="h-3.5 w-3.5 rounded-full bg-[#C6F432]" />
+              <span className="h-3.5 w-3.5 rounded-full bg-[#ff0000]" />
             </span>
           ))}
         </motion.div>

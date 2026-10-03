@@ -25,9 +25,7 @@ export default function Footer() {
       <div className="relative z-20 h-screen overflow-hidden" ref={container}>
         <Logos scrollProgress={scrollYProgress} />
       </div>
-      <div className="z-10 overflow-hidden">
-        <Svg scrollProgress={scrollYProgress} />
-      </div>
+      <Svg scrollProgress={scrollYProgress} />
     </div>
   );
 }
@@ -96,13 +94,20 @@ function Svg({ scrollProgress }) {
   const y = useTransform(scrollProgress, [0, 1], [200, 1]);
   const scale = useTransform(scrollProgress, [0, 1], [2, 1]);
 
+  // Only the top 813 units of the 1254 circle carry any colour (the gradient
+  // fades out at r=813 from the top centre), so the viewBox is cropped to
+  // that band. originY keeps the scale pivot on the full circle's centre
+  // (627 / 813), so the motion is unchanged. will-change gives the blob its
+  // own compositor layer: scrolling moves pixels instead of repainting a
+  // 200vw gradient every frame.
   return (
     <motion.svg
-      style={{ y, scale }}
-      className="absolute top-0 w-[200%]"
+      style={{ y, scale, originX: 0.5, originY: 627 / 813 }}
+      className="pointer-events-none absolute left-0 top-0 w-[200%] will-change-transform"
       id="c-circle"
-      viewBox="0 0 1254 1254"
+      viewBox="0 0 1254 813"
       fill="none"
+      aria-hidden="true"
       xmlns="http://www.w3.org/2000/svg"
     >
       <circle cx="627" cy="627" r="627" fill="url(#paint0_radial_3260_3)" />
