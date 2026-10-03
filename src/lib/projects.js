@@ -1,5 +1,5 @@
 // Central source of truth for portfolio projects.
-// Consumed by the Recent-Work grid and the /projects/[slug] detail pages.
+// Consumed by the Recent-Work section and the /projects/[slug] detail pages.
 
 export const featuredProjects = [
   {
@@ -12,6 +12,8 @@ export const featuredProjects = [
     image: '/images/projects/firstmerge.png',
     year: '2025',
     role: 'Design & Development',
+    kind: 'Product',
+    blurb: 'Open-source issue scoring tool',
     tagline: 'Find a good first issue worth your weekend.',
     summary:
       'FirstMerge scores every open-source “good first issue” before you spend a weekend on it — checking whether the issue is still unclaimed, the repo is active, and the maintainers actually merge outside contributions — and rolls it all into one Merge Score.',
@@ -48,6 +50,8 @@ export const featuredProjects = [
     image: '/images/projects/lade.png',
     year: '2025',
     role: 'Design & Development',
+    kind: 'Website',
+    blurb: 'Design & development agency site',
     tagline: 'Digital design & development agency.',
     summary:
       'A studio site for Lade Digital, an agency that helps companies build scalable digital products with thoughtful design systems and carefully crafted development. Built around a clean type-led layout with tactile 3D visuals.',
@@ -84,6 +88,8 @@ export const featuredProjects = [
     image: '/images/projects/36x.jpg',
     year: '2025',
     role: 'Design & Development',
+    kind: 'E-commerce',
+    blurb: 'Streetwear commerce storefront',
     tagline: 'Born on brick. Built for motion.',
     summary:
       '36X is a streetwear commerce experience — art meets apparel, straight from the underground up. The storefront leans into a gritty, cinematic dark aesthetic with a full collections, categories, and community flow.',

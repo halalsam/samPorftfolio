@@ -1,52 +1,41 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import localFont from 'next/font/local';
-import {
-  motion,
-  animate,
-  useInView,
-  useMotionValue,
-  useTransform,
-  useSpring,
-  useMotionValueEvent,
-} from 'framer-motion';
-import {
-  PiArrowLeftThin,
-  PiArrowRightThin,
-  PiArrowUpRightThin,
-} from 'react-icons/pi';
-import { slideUpTitle } from '@/animation/anim';
+import { motion, useMotionValue, useReducedMotion } from 'framer-motion';
 import { featuredProjects } from '@/lib/projects';
-import MagneticButton from '@/components/Common/magnetic-button';
 
-const thunder = localFont({
-  src: '../../fonts/Thunder/Thunder-BlackLC.otf',
+const satoshi = localFont({
+  src: [
+    { path: '../../fonts/Satoshi/Satoshi-Regular.woff2', weight: '400' },
+    { path: '../../fonts/Satoshi/Satoshi-Medium.woff2', weight: '500' },
+    { path: '../../fonts/Satoshi/Satoshi-Bold.woff2', weight: '700' },
+    { path: '../../fonts/Satoshi/Satoshi-Black.woff2', weight: '900' },
+  ],
 });
 
 // Featured projects (internal case-study pages) followed by the older
 // builds that only link out.
-const slides = [
+const projects = [
   ...featuredProjects.map((project) => ({
     key: project.slug,
     name: project.name,
     image: project.image,
-    accent: project.accent,
-    role: project.role,
-    year: project.year,
+    kind: project.kind,
+    blurb: project.blurb,
+    tags: project.stack.slice(0, 2).join(' · '),
     href: `/projects/${project.slug}`,
     internal: true,
-    live: project.live,
-    liveHref: project.href,
   })),
   {
     key: 'aelzel',
     name: 'Aelzel',
     image: '/videos/AF.gif',
-    accent: '#d4a373',
-    role: 'Design & Development',
-    year: '2024',
+    kind: 'E-commerce',
+    blurb: 'Fashion e-commerce storefront',
+    tags: 'Design & Development',
     href: 'https://github.com/Sammk21/AfStore',
     internal: false,
   },
@@ -54,9 +43,9 @@ const slides = [
     key: 'dividebyzero',
     name: 'Divide by Zero',
     image: '/images/dividebyzero.webp',
-    accent: '#8b5cf6',
-    role: 'Design & Development',
-    year: '2024',
+    kind: 'E-commerce',
+    blurb: 'Apparel e-commerce storefront',
+    tags: 'Design & Development',
     href: 'https://github.com/Sammk21/dbz-store-of',
     internal: false,
   },
@@ -64,296 +53,301 @@ const slides = [
     key: 'onlyeducation',
     name: 'Only Education',
     image: '/images/onlyeducation.webp',
-    accent: '#38bdf8',
-    role: 'Development',
-    year: '2024',
+    kind: 'Website',
+    blurb: 'Education platform',
+    tags: 'Development',
     href: 'https://onlyeducation.in',
     internal: false,
-    live: true,
-    liveHref: 'https://onlyeducation.in',
   },
 ];
 
-const Slide = ({ slide, x }) => {
-  const ref = useRef(null);
+const VIEWS = [
+  { id: 'grid', label: 'Grid' },
+  { id: 'list', label: 'Index' },
+];
 
-  // Parallax: the inner image drifts against the drag direction based on
-  // how far the slide sits from the viewport centre.
-  const imgX = useTransform(x, (latest) => {
-    const el = ref.current;
-    if (!el || typeof window === 'undefined') return 0;
-    const center = el.offsetLeft + latest + el.offsetWidth / 2;
-    return (center - window.innerWidth / 2) * -0.08;
-  });
+const TICKER = [
+  'Available for freelance',
+  'Next.js',
+  'Medusa',
+  'Strapi',
+  'React Native',
+];
 
-  // The card nearest the viewport centre sits at full size; the peeking
-  // neighbours settle slightly smaller and scale up as they slide in.
-  const scale = useTransform(x, (latest) => {
-    const el = ref.current;
-    if (!el || typeof window === 'undefined') return 0.9;
-    const center = el.offsetLeft + latest + el.offsetWidth / 2;
-    const dist = Math.abs(center - window.innerWidth / 2);
-    return 1 - Math.min(dist / window.innerWidth, 1) * 0.18;
-  });
+const EASE = [0.16, 1, 0.3, 1];
 
-  // Pill reveal: fully visible while the card holds the centre, melting
-  // away as it slides toward the edges.
-  const reveal = useTransform(x, (latest) => {
-    const el = ref.current;
-    if (!el || typeof window === 'undefined') return 0;
-    const center = el.offsetLeft + latest + el.offsetWidth / 2;
-    const dist = Math.abs(center - window.innerWidth / 2);
-    return Math.max(0, Math.min(1, 1 - dist / (window.innerWidth * 0.3)));
-  });
-  const pillY = useTransform(reveal, (v) => (1 - v) * 24);
+const focusRing =
+  'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C6F432]';
 
-  const Anchor = slide.internal ? Link : 'a';
-  const anchorProps = slide.internal
-    ? { href: slide.href }
-    : { href: slide.href, target: '_blank', rel: 'noreferrer' };
+const ArrowUpRight = ({ size = 16, strokeWidth = 2, className }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth={strokeWidth}
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    className={className}
+  >
+    <path d="M7 17 17 7M8 7h9v9" />
+  </svg>
+);
 
-  return (
-    <motion.div
-      ref={ref}
-      style={{ scale }}
-      className="group relative w-[88vw] shrink-0 sm:w-[64vw] lg:w-[54vw]"
-    >
-      <Anchor {...anchorProps} draggable={false} className="block">
-        <div className="relative">
-          {/* YouTube-style hover: an accent-tinted backdrop and outline grow
-              out from behind the card, then fade back into the void. */}
-          <div
-            aria-hidden
-            style={{
-              backgroundColor: `${slide.accent}40`,
-              boxShadow: `0 0 0 1px ${slide.accent}90, 0 0 90px 0 ${slide.accent}40`,
-            }}
-            className="absolute -inset-3 rounded-2xl opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100 sm:-inset-4"
-          />
-          <div className="relative aspect-[14/9] w-full overflow-hidden">
-            <motion.img
-              src={slide.image}
-              alt={slide.name}
-              draggable={false}
-              style={{ x: imgX }}
-              className="absolute inset-0 h-full w-[120%] max-w-none object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+const ProjectLink = ({ project, ...props }) =>
+  project.internal ? (
+    <Link href={project.href} {...props} />
+  ) : (
+    <a href={project.href} target="_blank" rel="noreferrer" {...props} />
+  );
+
+const GridView = () => (
+  <div className="grid grid-cols-1 gap-x-10 gap-y-[clamp(56px,8vw,96px)] min-[960px]:grid-cols-2 min-[960px]:pb-40">
+    {projects.map((project, index) => (
+      <ProjectLink
+        key={project.key}
+        project={project}
+        className={`group flex min-w-0 flex-col gap-5 text-[#EDEDE6] ${focusRing} ${
+          index % 2 === 1 ? 'min-[960px]:translate-y-40' : ''
+        }`}
+      >
+        <div className="relative aspect-[4/3] overflow-hidden rounded-[10px] bg-[#141414]">
+          <div className="absolute inset-0 transition-transform duration-1000 [transition-timing-function:cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none [@media(hover:hover)]:group-hover:scale-[1.06] [@media(hover:hover)]:group-focus-visible:scale-[1.06]">
+            <Image
+              src={project.image}
+              alt={`${project.name} preview`}
+              fill
+              sizes="(min-width: 960px) 50vw, 100vw"
+              className="object-cover"
             />
-            <h3
-              className={`${thunder.className} pointer-events-none absolute bottom-2 left-4 z-10 whitespace-nowrap text-[clamp(3.5rem,8vw,8rem)] uppercase leading-none text-white mix-blend-difference sm:bottom-4 sm:left-6`}
-            >
-              {slide.name}
-            </h3>
+          </div>
+          <span className="pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 scale-[.6] items-center gap-2 whitespace-nowrap rounded-full bg-[#C6F432] px-6 py-4 text-[15px] font-bold text-[#0A0A0A] opacity-0 [transition:opacity_.4s_ease,transform_.7s_cubic-bezier(.16,1,.3,1)] [@media(hover:hover)]:group-hover:scale-100 [@media(hover:hover)]:group-hover:opacity-100 [@media(hover:hover)]:group-focus-visible:scale-100 [@media(hover:hover)]:group-focus-visible:opacity-100">
+            View project
+            <ArrowUpRight />
+          </span>
+        </div>
+
+        <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3 pt-1">
+          <div className="flex min-w-0 flex-col gap-2 max-[560px]:w-full">
+            <span className="text-[clamp(24px,2.4vw,32px)] font-bold leading-none tracking-[-0.025em] transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none [@media(hover:hover)]:group-hover:translate-x-2">
+              {project.name}
+            </span>
+            <span className="text-[15px] text-[#8C8C86]">{project.blurb}</span>
+          </div>
+          <div className="flex flex-col items-end gap-2.5 max-[560px]:flex-row max-[560px]:flex-wrap max-[560px]:items-start">
+            <span className="rounded-full border border-[#2E2E2E] px-3 py-1.5 text-xs uppercase tracking-[0.08em]">
+              {project.kind}
+            </span>
+            <span className="text-[13px] text-[#8C8C86]">{project.tags}</span>
           </div>
         </div>
+      </ProjectLink>
+    ))}
+  </div>
+);
 
-        <motion.div
-          style={{ opacity: reveal, y: pillY }}
-          className="mt-6 flex justify-center"
-        >
-          <span className="inline-flex items-center gap-3 rounded-full bg-white px-5 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-black sm:text-[11px]">
+const ListView = () => {
+  const [active, setActive] = useState(-1);
+  const previewX = useMotionValue(0);
+  const previewY = useMotionValue(0);
+  const previewIndex = Math.max(active, 0);
+
+  // The floating preview (380 × 285) stays centred on the pointer.
+  const onMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    previewX.set(e.clientX - rect.left - 190);
+    previewY.set(e.clientY - rect.top - 142);
+  };
+
+  return (
+    <div
+      onMouseMove={onMove}
+      onMouseLeave={() => setActive(-1)}
+      className="relative border-b border-[#232323]"
+    >
+      {projects.map((project, index) => {
+        const isActive = active === index;
+        const dimmed = active !== -1 && !isActive;
+        return (
+          <ProjectLink
+            key={project.key}
+            project={project}
+            onMouseEnter={() => setActive(index)}
+            onFocus={() => setActive(index)}
+            className={`grid grid-cols-[minmax(0,1fr)_auto_28px] items-center gap-x-8 gap-y-1.5 border-t border-[#232323] py-[clamp(20px,3vw,32px)] transition-colors duration-300 max-[959px]:grid-cols-[88px_minmax(0,1fr)_24px] max-[959px]:gap-x-4 ${focusRing} ${
+              dimmed ? 'text-[#6E6E69]' : 'text-[#EDEDE6]'
+            }`}
+          >
             <span
-              style={{
-                backgroundColor: slide.accent,
-                boxShadow: `0 0 12px ${slide.accent}`,
-              }}
-              className="h-1.5 w-1.5 rounded-full"
-            />
-            {slide.role}
-            <span className="text-black/40">—</span>
-            <span className="text-black/60">{slide.year}</span>
-          </span>
-        </motion.div>
-      </Anchor>
-
-      {/* Live blob — separate anchor floating over the card (never nested
-          inside the card link) pointing at the deployed site. */}
-      {slide.live && slide.liveHref ? (
-        <div className="absolute right-5 top-5 z-20">
-          <MagneticButton>
-            <a
-              href={slide.liveHref}
-              target="_blank"
-              rel="noreferrer"
-              aria-label={`Visit ${slide.name} live`}
-              draggable={false}
-              className="group/live relative flex h-16 w-16 items-center justify-center rounded-full bg-[#e11d2e] text-[9px] font-bold uppercase tracking-wider text-white transition-colors duration-300 hover:bg-white"
+              aria-hidden="true"
+              className="relative hidden aspect-[4/3] w-[88px] overflow-hidden rounded-md bg-[#141414] max-[959px]:col-start-1 max-[959px]:row-span-2 max-[959px]:row-start-1 max-[959px]:block"
             >
-              {/* Default face: blinking white dot + LIVE, exits up-right on hover */}
-              <span className="relative flex items-center gap-1.5 transition-all duration-300 ease-out group-hover/live:-translate-y-3 group-hover/live:translate-x-3 group-hover/live:opacity-0">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-90" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
-                </span>
-                Live
-              </span>
-              {/* Hover face: red arrow flies in from bottom-left toward top-right */}
-              <span className="absolute inset-0 flex -translate-x-3 translate-y-3 items-center justify-center text-2xl text-[#e11d2e] opacity-0 transition-all duration-300 ease-out group-hover/live:translate-x-0 group-hover/live:translate-y-0 group-hover/live:opacity-100">
-                <PiArrowUpRightThin />
-              </span>
-            </a>
-          </MagneticButton>
-        </div>
-      ) : null}
-    </motion.div>
+              <Image
+                src={project.image}
+                alt=""
+                fill
+                sizes="88px"
+                className="object-cover"
+              />
+            </span>
+            <span
+              className={`min-w-0 text-[clamp(28px,5.5vw,88px)] font-bold leading-none tracking-[-0.04em] transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none max-[959px]:col-start-2 max-[959px]:row-start-1 max-[959px]:!translate-x-0 ${
+                isActive ? 'translate-x-7' : ''
+              }`}
+            >
+              {project.name}
+            </span>
+            <span className="flex flex-col items-end gap-1.5 text-sm text-[#8C8C86] max-[959px]:col-start-2 max-[959px]:row-start-2 max-[959px]:flex-row max-[959px]:flex-wrap max-[959px]:items-start max-[959px]:gap-x-2.5 max-[959px]:gap-y-1">
+              <span className="text-[#EDEDE6]">{project.kind}</span>
+              <span>{project.tags}</span>
+            </span>
+            <ArrowUpRight
+              size={28}
+              strokeWidth={1.6}
+              className={`transition-colors duration-300 max-[959px]:col-start-3 max-[959px]:row-span-2 max-[959px]:row-start-1 ${
+                isActive ? 'text-[#C6F432]' : 'text-[#6E6E69]'
+              }`}
+            />
+          </ProjectLink>
+        );
+      })}
+
+      <motion.div
+        aria-hidden="true"
+        style={{ x: previewX, y: previewY, rotate: -4 }}
+        initial={false}
+        animate={{ opacity: active >= 0 ? 1 : 0, scale: active >= 0 ? 1 : 0.8 }}
+        transition={{
+          opacity: { duration: 0.3 },
+          scale: { duration: 0.5, ease: EASE },
+        }}
+        className="pointer-events-none absolute left-0 top-0 z-[5] aspect-[4/3] w-[380px] overflow-hidden rounded-[10px] bg-[#141414] shadow-[0_40px_80px_rgba(0,0,0,0.6)] max-[959px]:hidden [@media(hover:none)]:hidden"
+      >
+        {/* Every preview is mounted up front so switching rows never waits
+            on an image request. */}
+        {projects.map((project, index) => (
+          <Image
+            key={project.key}
+            src={project.image}
+            alt=""
+            fill
+            sizes="380px"
+            className={`object-cover ${
+              index === previewIndex ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+        ))}
+      </motion.div>
+    </div>
   );
 };
 
 const RecentWork = () => {
-  const viewportRef = useRef(null);
-  const trackRef = useRef(null);
-  const headingRef = useRef(null);
-  const headingInView = useInView(headingRef, { once: true, margin: '-10%' });
-  const [maxDrag, setMaxDrag] = useState(0);
-  const [atStart, setAtStart] = useState(true);
-  const [atEnd, setAtEnd] = useState(false);
-  const stepRef = useRef(0);
-  const draggingRef = useRef(false);
-
-  const x = useMotionValue(0);
-  const progress = useSpring(0, { stiffness: 120, damping: 30 });
-
-  useEffect(() => {
-    const measure = () => {
-      const track = trackRef.current;
-      const viewport = viewportRef.current;
-      if (!track || !viewport) return;
-      setMaxDrag(Math.max(track.scrollWidth - viewport.offsetWidth, 0));
-      const kids = track.children;
-      stepRef.current =
-        kids.length > 1 ? kids[1].offsetLeft - kids[0].offsetLeft : 0;
-    };
-    measure();
-    window.addEventListener('resize', measure);
-    return () => window.removeEventListener('resize', measure);
-  }, []);
-
-  useMotionValueEvent(x, 'change', (latest) => {
-    if (maxDrag > 0) progress.set(Math.min(-latest / maxDrag, 1));
-    setAtStart(latest >= -1);
-    setAtEnd(latest <= -maxDrag + 1);
-  });
-
-  const clampX = (value) => Math.max(Math.min(value, 0), -maxDrag);
-
-  // Momentum settles on the nearest slide so a flick never skips far ahead.
-  const snapTarget = (target) => {
-    const step = stepRef.current;
-    if (!step) return clampX(target);
-    return clampX(Math.round(target / step) * step);
-  };
-
-  const goTo = (direction) => {
-    const step = stepRef.current;
-    if (!step) return;
-    const target = snapTarget(
-      Math.round(x.get() / step) * step + direction * -step
-    );
-    animate(x, target, { type: 'spring', stiffness: 90, damping: 20 });
-  };
-
-  // Horizontal trackpad swipes move the slider; vertical page scroll is
-  // left untouched.
-  useEffect(() => {
-    const viewport = viewportRef.current;
-    if (!viewport) return;
-    const onWheel = (e) => {
-      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
-      e.preventDefault();
-      x.set(clampX(x.get() - e.deltaX * 0.6));
-    };
-    viewport.addEventListener('wheel', onWheel, { passive: false });
-    return () => viewport.removeEventListener('wheel', onWheel);
-  }, [x, maxDrag]);
+  const [view, setView] = useState('grid');
+  const reduceMotion = useReducedMotion();
 
   return (
-    <section className="-mx-10 my-24 overflow-hidden">
-      <div
-        ref={headingRef}
-        className="flex justify-start px-10 pb-12 text-[12vw] font-bold tracking-tight sm:text-[8vw]"
-      >
-        {'Recent Work'.split('').map((char, index) => (
-          <span
-            className="relative inline-flex overflow-hidden text-center"
-            key={index}
-          >
-            <motion.span
-              className="inline-block"
-              variants={slideUpTitle}
-              custom={index}
-              initial="closed"
-              animate={headingInView ? 'open' : 'closed'}
-              transition={{ ease: [0.16, 1, 0.3, 1] }}
+    <section
+      id="work"
+      className={`${satoshi.className} -mx-10 overflow-hidden px-[clamp(20px,4.5vw,64px)] pt-[clamp(64px,9vw,96px)] text-[#EDEDE6]`}
+    >
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#232323] pb-5">
+        <div className="flex items-center gap-3 text-[13px] uppercase tracking-[0.08em] text-[#8C8C86]">
+          <span className="h-2 w-2 rounded-full bg-[#C6F432]" />
+          <span>Projects</span>
+        </div>
+        <div
+          role="group"
+          aria-label="Project layout"
+          className="flex gap-1 rounded-full border border-[#2A2A2A] p-1 max-[560px]:w-full"
+        >
+          {VIEWS.map(({ id, label }) => (
+            <button
+              key={id}
+              type="button"
+              aria-pressed={view === id}
+              onClick={() => setView(id)}
+              className={`min-h-[44px] rounded-full px-5 text-sm font-medium transition-colors duration-300 max-[560px]:flex-1 ${focusRing} ${
+                view === id
+                  ? 'bg-[#EDEDE6] text-[#0A0A0A]'
+                  : 'bg-transparent text-[#EDEDE6]'
+              }`}
             >
-              {char === ' ' ? '' : char}
-            </motion.span>
-          </span>
-        ))}
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="relative">
-        <div ref={viewportRef} className="cursor-grab active:cursor-grabbing">
-          <motion.div
-            ref={trackRef}
-            drag="x"
-            style={{ x }}
-            dragConstraints={{ left: -maxDrag, right: 0 }}
-            dragElastic={0.04}
-            dragTransition={{
-              power: 0.2,
-              timeConstant: 180,
-              modifyTarget: snapTarget,
-            }}
-            onDragStart={() => {
-              draggingRef.current = true;
-            }}
-            onDragEnd={() => {
-              // Let the trailing click fire (and get swallowed) before
-              // re-arming link navigation.
-              requestAnimationFrame(() => {
-                draggingRef.current = false;
-              });
-            }}
-            onClickCapture={(e) => {
-              if (draggingRef.current) {
-                e.preventDefault();
-                e.stopPropagation();
-              }
-            }}
-            className="flex w-max items-center gap-[6vw] px-[6vw] pb-16 pt-2 sm:px-[18vw] lg:px-[23vw]"
-          >
-            {slides.map((slide) => (
-              <Slide key={slide.key} slide={slide} x={x} />
-            ))}
-          </motion.div>
+      <div className="flex flex-wrap items-end justify-between gap-[clamp(28px,4vw,40px)] pb-[clamp(56px,8vw,96px)] pt-[clamp(40px,7vw,72px)]">
+        <h2 className="text-[clamp(64px,15vw,220px)] font-black leading-[0.84] tracking-[-0.055em]">
+          Selected
+          <br />
+          Work
+        </h2>
+        <div className="flex max-w-[380px] flex-col gap-7">
+          <p className="text-[clamp(16px,1.6vw,19px)] leading-normal text-[#B4B4AE]">
+            A handful of storefronts, products and tools I’ve designed and
+            shipped — built for speed, polish and the small details that make
+            people stay.
+          </p>
+          <div className="flex items-center gap-2.5 text-[13px] uppercase tracking-[0.08em] text-[#8C8C86]">
+            <span>Hover to preview</span>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 5v14M5 12l7 7 7-7" />
+            </svg>
+          </div>
         </div>
-
-        <button
-          type="button"
-          aria-label="Previous project"
-          onClick={() => goTo(-1)}
-          disabled={atStart}
-          className="absolute left-4 top-1/2 z-20 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-2xl text-white backdrop-blur-md transition-all duration-300 hover:bg-white hover:text-black disabled:pointer-events-none disabled:opacity-25 sm:left-8"
-        >
-          <PiArrowLeftThin />
-        </button>
-        <button
-          type="button"
-          aria-label="Next project"
-          onClick={() => goTo(1)}
-          disabled={atEnd}
-          className="absolute right-4 top-1/2 z-20 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-2xl text-white backdrop-blur-md transition-all duration-300 hover:bg-white hover:text-black disabled:pointer-events-none disabled:opacity-25 sm:right-8"
-        >
-          <PiArrowRightThin />
-        </button>
       </div>
 
-      <div className="px-10 sm:px-16">
-        <div className="relative h-px w-full bg-neutral-800">
-          <motion.div
-            style={{ scaleX: progress }}
-            className="absolute inset-0 origin-left bg-white"
-          />
-        </div>
+      {view === 'grid' ? <GridView /> : <ListView />}
+
+      <div className="flex flex-wrap items-center justify-between gap-10 pb-[clamp(72px,10vw,120px)] pt-[clamp(96px,13vw,160px)]">
+        <p className="max-w-[900px] text-[clamp(36px,6vw,96px)] font-bold leading-[0.95] tracking-[-0.045em]">
+          Got a project in mind?
+          <br />
+          <span className="text-[#8C8C86]">Let’s build it properly.</span>
+        </p>
+        <a
+          href="mailto:05sameerk@gmail.com"
+          className={`flex h-[180px] w-[180px] flex-col items-center justify-center gap-2 rounded-full bg-[#C6F432] text-[17px] font-bold text-[#0A0A0A] transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none max-[560px]:h-[140px] max-[560px]:w-[140px] max-[560px]:text-[15px] [@media(hover:hover)]:hover:-rotate-6 [@media(hover:hover)]:hover:scale-[1.08] ${focusRing}`}
+        >
+          <ArrowUpRight size={28} />
+          <span>Let’s talk</span>
+        </a>
+      </div>
+
+      <div
+        aria-hidden="true"
+        className="-mx-[clamp(20px,4.5vw,64px)] overflow-hidden border-t border-[#232323] py-[clamp(24px,3vw,36px)]"
+      >
+        <motion.div
+          className="flex w-max"
+          animate={reduceMotion ? undefined : { x: ['0%', '-50%'] }}
+          transition={{ duration: 32, ease: 'linear', repeat: Infinity }}
+        >
+          {[...TICKER, ...TICKER].map((word, index) => (
+            <span
+              key={index}
+              className="flex items-center gap-[clamp(20px,3vw,40px)] whitespace-nowrap pr-[clamp(20px,3vw,40px)] text-[clamp(32px,4.5vw,56px)] font-bold tracking-[-0.035em]"
+            >
+              <span>{word}</span>
+              <span className="h-3.5 w-3.5 rounded-full bg-[#C6F432]" />
+            </span>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
