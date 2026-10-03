@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, useMotionValue, useReducedMotion } from 'framer-motion';
@@ -236,6 +236,13 @@ const ListView = () => {
 
 const RecentWork = () => {
   const [view, setView] = useState('grid');
+
+  // Phones open on the Index view. Decided after mount so server and
+  // client markup match; the section sits well below the fold, so the
+  // swap is never seen.
+  useEffect(() => {
+    if (window.matchMedia('(max-width: 767px)').matches) setView('list');
+  }, []);
   const reduceMotion = useReducedMotion();
 
   return (
@@ -243,11 +250,7 @@ const RecentWork = () => {
       id="work"
       className="-mx-10 overflow-hidden px-[clamp(20px,4.5vw,64px)] pt-[clamp(64px,9vw,96px)] text-[#b9bcc1]"
     >
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#232323] pb-5">
-        <div className="flex items-center gap-3 text-sm uppercase tracking-[0.08em] text-[#b9bcc1]/60">
-          <span className="h-2 w-2 rounded-full bg-[#ff0000]" />
-          <span>Projects</span>
-        </div>
+      <div className="flex justify-end border-b border-[#232323] pb-5">
         <div
           role="group"
           aria-label="Project layout"
@@ -304,24 +307,9 @@ const RecentWork = () => {
 
       {view === 'grid' ? <GridView /> : <ListView />}
 
-      <div className="flex flex-wrap items-center justify-between gap-10 pb-[clamp(72px,10vw,120px)] pt-[clamp(96px,13vw,160px)]">
-        <p className="max-w-[900px] text-[6.5vw] font-bold leading-none sm:text-[4.5vw] md:text-[3.5vw]">
-          Got a project in mind?
-          <br />
-          <span className="text-[#b9bcc1]/60">Let’s build it properly.</span>
-        </p>
-        <a
-          href="mailto:05sameerk@gmail.com"
-          className={`flex h-[180px] w-[180px] flex-col items-center justify-center gap-2 rounded-full bg-[#ff0000] text-lg font-bold text-[#0A0A0A] transition-transform [transition-duration:600ms] [transition-timing-function:cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none max-[560px]:h-[140px] max-[560px]:w-[140px] max-[560px]:text-base [@media(hover:hover)]:hover:-rotate-6 [@media(hover:hover)]:hover:scale-[1.08] ${focusRing}`}
-        >
-          <ArrowUpRight size={28} />
-          <span>Let’s talk</span>
-        </a>
-      </div>
-
       <div
         aria-hidden="true"
-        className="-mx-[clamp(20px,4.5vw,64px)] overflow-hidden border-t border-[#232323] py-[clamp(24px,3vw,36px)]"
+        className="-mx-[clamp(20px,4.5vw,64px)] mt-[clamp(72px,10vw,120px)] overflow-hidden border-t border-[#232323] py-[clamp(24px,3vw,36px)]"
       >
         <motion.div
           className="flex w-max"
