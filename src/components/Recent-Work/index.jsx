@@ -3,18 +3,8 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import localFont from 'next/font/local';
 import { motion, useMotionValue, useReducedMotion } from 'framer-motion';
 import { featuredProjects } from '@/lib/projects';
-
-const satoshi = localFont({
-  src: [
-    { path: '../../fonts/Satoshi/Satoshi-Regular.woff2', weight: '400' },
-    { path: '../../fonts/Satoshi/Satoshi-Medium.woff2', weight: '500' },
-    { path: '../../fonts/Satoshi/Satoshi-Bold.woff2', weight: '700' },
-    { path: '../../fonts/Satoshi/Satoshi-Black.woff2', weight: '900' },
-  ],
-});
 
 // Featured projects (internal case-study pages) followed by the older
 // builds that only link out.
@@ -251,7 +241,7 @@ const RecentWork = () => {
   return (
     <section
       id="work"
-      className={`${satoshi.className} -mx-10 overflow-hidden px-[clamp(20px,4.5vw,64px)] pt-[clamp(64px,9vw,96px)] text-[#EDEDE6]`}
+      className="-mx-10 overflow-hidden px-[clamp(20px,4.5vw,64px)] pt-[clamp(64px,9vw,96px)] text-[#EDEDE6]"
     >
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#232323] pb-5">
         <div className="flex items-center gap-3 text-[13px] uppercase tracking-[0.08em] text-[#8C8C86]">
@@ -282,7 +272,7 @@ const RecentWork = () => {
       </div>
 
       <div className="flex flex-wrap items-end justify-between gap-[clamp(28px,4vw,40px)] pb-[clamp(56px,8vw,96px)] pt-[clamp(40px,7vw,72px)]">
-        <h2 className="text-[clamp(64px,15vw,220px)] font-black leading-[0.84] tracking-[-0.055em]">
+        <h2 className="text-[clamp(64px,15vw,220px)] font-bold leading-[0.84] tracking-[-0.055em]">
           Selected
           <br />
           Work
