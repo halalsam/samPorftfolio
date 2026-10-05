@@ -19,6 +19,22 @@ module.exports = {
   			height: 'height'
   		},
   		colors: {
+  			// Project-page theme tokens. Each case study sets these CSS
+  			// variables from its own `theme` (see components/project/theme.js).
+  			pd: {
+  				bg: 'var(--pd-bg)',
+  				fg: 'var(--pd-fg)',
+  				muted: 'var(--pd-muted)',
+  				faint: 'var(--pd-faint)',
+  				line: 'var(--pd-line)',
+  				surface: 'var(--pd-surface)',
+  				accent: 'var(--pd-accent)',
+  				'accent-fg': 'var(--pd-accent-fg)',
+  				'accent-text': 'var(--pd-accent-text)',
+  				'accent-soft': 'var(--pd-accent-soft)'
+  			},
+  			// The site's one accent outside project pages (the preloader red).
+  			signal: '#ff2b1f',
   			orange: '#ed7c50',
   			darkOrange: '#d96d43',
   			darkGrey: '#595959',

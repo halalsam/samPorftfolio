@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_blocks_overviews",
+  "info": {
+    "displayName": "Overview",
+    "icon": "file",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "navLabel": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "body": {
+      "type": "blocks"
+    },
+    "facts": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.fact"
+    }
+  }
+}

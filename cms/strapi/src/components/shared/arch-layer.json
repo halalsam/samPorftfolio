@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_shared_arch_layers",
+  "info": {
+    "displayName": "Architecture layer",
+    "icon": "stack"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "nodes": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.arch-node"
+    }
+  }
+}

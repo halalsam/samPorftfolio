@@ -1,124 +1,59 @@
 'use client';
 
 import { useRef } from 'react';
-import { useScroll, useTransform, motion } from 'framer-motion';
-import MagneticButton from '../Common/magnetic-button';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { thunder } from '@/lib/fonts';
+import { useAmount } from '@/components/ui/reveal';
+import WipeText from '@/components/ui/wipe-text';
+import { EMAIL, PHONE, SOCIALS } from '@/lib/contact';
+import { useYear } from '@/hooks/useYear';
 
-const SOCIALS = [
-  { label: 'Instagram', href: 'https://www.instagram.com/abeysamm/' },
-  {
-    label: 'LinkedIn',
-    href: 'https://www.linkedin.com/in/sameer-khan-837023259/',
-  },
-  { label: 'Github', href: 'https://github.com/Sammk21' },
-];
+const UNDERLINE =
+  'relative after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 group-hover:after:scale-x-100 group-focus-visible:after:scale-x-100 motion-reduce:after:transition-none';
+const FOCUS = 'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal';
 
+/**
+ * The sign-off. No slogan: one plain line, then the email set huge as the
+ * thing to click (it wipes to the signal red), the phone, the socials. The
+ * whole block drifts up into place as the footer scrolls in.
+ */
 export default function Footer() {
-  const container = useRef();
-  const { scrollYProgress } = useScroll({
-    target: container,
-    offset: ['start end', 'end end'],
-  });
+  const container = useRef(null);
+  const year = useYear();
+  const amp = useAmount(1);
+  const { scrollYProgress } = useScroll({ target: container, offset: ['start end', 'end end'] });
+  const y = useTransform([scrollYProgress, amp], ([p, a]) => (p - 1) * 140 * a);
 
   return (
-    <div className="relative overflow-hidden">
-      <div className="relative z-20 h-screen overflow-hidden" ref={container}>
-        <Logos scrollProgress={scrollYProgress} />
-      </div>
-      <div className="z-10 overflow-hidden">
-        <Svg scrollProgress={scrollYProgress} />
-      </div>
-    </div>
-  );
-}
-
-const Logos = ({ scrollProgress }) => {
-  const y = useTransform(scrollProgress, [0, 1], [-200, 0]);
-
-  return (
-    <motion.div
-      style={{ y }}
-      className="z-10 flex h-full flex-col items-center gap-10 px-10 py-16 sm:px-16 sm:py-28"
-    >
-      <div className="flex w-full flex-col">
-        <div className="hidden flex-col text-center text-[6vw] leading-none tracking-tight sm:flex">
-          <span>LET'S GET</span>
-          <span>
-            YOU IN <span className="text-[#ff0000]">CREATIVE</span>
-          </span>
-          <span>SPACE</span>
-        </div>
-        <div className="flex flex-col text-center text-[30vw] leading-none tracking-tight sm:hidden">
-          <span>LET'S</span>
-          <span className="text-[#ff0000]">Talk</span>
+    <footer ref={container} className="relative overflow-hidden">
+      <motion.div style={{ y }} className="flex min-h-[100svh] flex-col justify-between gap-20 px-6 pb-8 pt-28 sm:px-10 sm:pt-36">
+        <div>
+          <p className="max-w-[22ch] text-[clamp(1.75rem,3.4vw,3.25rem)] font-light leading-[1.1] tracking-[-0.02em] text-white">
+            Have something to build? Write to me.
+          </p>
+          <a href={EMAIL.href} className={`group mt-8 block w-fit max-w-full ${FOCUS}`}>
+            <WipeText color="#ff2b1f" className={`${thunder.className} whitespace-nowrap text-[clamp(2.5rem,10vw,13rem)] leading-[0.95] text-white`}>
+              {EMAIL.label}
+            </WipeText>
+          </a>
+          <a href={PHONE.href} className={`group mt-8 inline-block text-[clamp(1.25rem,2vw,1.75rem)] text-white ${FOCUS}`}>
+            <span className={UNDERLINE}>{PHONE.label}</span>
+          </a>
         </div>
 
-        <div className="my-10 flex flex-col items-center gap-5 sm:flex-row sm:justify-center sm:gap-8">
-          <MagneticButton>
-            <a
-              href="mailto:05sameerk@gmail.com"
-              className="block w-full rounded-full border border-[#b9bcc147] px-8 py-4 text-center text-[5vw] sm:w-auto sm:px-12 sm:py-5 sm:text-[1.5vw]"
-            >
-              <span className="text-[80%]">05sameerk@gmail.com</span>
-            </a>
-          </MagneticButton>
-          <MagneticButton>
-            <a
-              href="tel:+919321818500"
-              className="block w-full rounded-full border border-[#b9bcc147] px-8 py-4 text-center text-[5vw] sm:w-auto sm:px-12 sm:py-5 sm:text-[1.5vw]"
-            >
-              <span className="text-[80%]">+91 9321818850</span>
-            </a>
-          </MagneticButton>
+        <div className="flex flex-col gap-8 text-sm sm:flex-row sm:items-end sm:justify-between sm:text-base">
+          <ul className="flex flex-wrap gap-x-8 gap-y-3">
+            {SOCIALS.map(({ label, href }) => (
+              <li key={label}>
+                <a href={href} target="_blank" rel="noopener noreferrer" className={`group text-white ${FOCUS}`}>
+                  <span className={UNDERLINE}>{label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p>© {year} Sam. All rights reserved.</p>
         </div>
-        <div className="socials mt-16 flex items-center justify-between gap-y-5">
-          {SOCIALS.map(({ label, href }) => (
-            <a
-              key={label}
-              href={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="cta font-base"
-            >
-              <span className="hover-underline-animation">{label}</span>
-            </a>
-          ))}
-        </div>
-        <div className="py-3 text-sm sm:text-lg">
-          <p>©2026 Sam, All Rights Reserved • Credits</p>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
-function Svg({ scrollProgress }) {
-  const y = useTransform(scrollProgress, [0, 1], [200, 1]);
-  const scale = useTransform(scrollProgress, [0, 1], [2, 1]);
-
-  return (
-    <motion.svg
-      style={{ y, scale }}
-      className="absolute top-0 w-[200%]"
-      id="c-circle"
-      viewBox="0 0 1254 1254"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle cx="627" cy="627" r="627" fill="url(#paint0_radial_3260_3)" />
-      <defs>
-        <radialGradient
-          id="paint0_radial_3260_3"
-          cx="0"
-          cy="0"
-          r="1"
-          gradientUnits="userSpaceOnUse"
-          gradientTransform="translate(627) rotate(90) scale(813)"
-        >
-          <stop stopColor="#F3F3F3" stopOpacity="0.45" />
-          <stop offset="1" stopColor="white" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-    </motion.svg>
+      </motion.div>
+    </footer>
   );
 }

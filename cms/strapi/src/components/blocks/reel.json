@@ -1,0 +1,48 @@
+{
+  "collectionName": "components_blocks_reels",
+  "info": {
+    "displayName": "Reel",
+    "icon": "play",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "navLabel": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "caption": {
+      "type": "text"
+    },
+    "landscape": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "videos"
+      ]
+    },
+    "landscapePoster": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "portrait": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "videos"
+      ]
+    },
+    "portraitPoster": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_shared_stack_groups",
+  "info": {
+    "displayName": "Stack group",
+    "icon": "layer"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string",
+      "required": true
+    },
+    "items": {
+      "type": "text"
+    }
+  }
+}

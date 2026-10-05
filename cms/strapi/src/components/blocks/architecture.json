@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_blocks_architectures",
+  "info": {
+    "displayName": "Architecture",
+    "icon": "cog",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "navLabel": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "intro": {
+      "type": "blocks"
+    },
+    "layers": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.arch-layer"
+    },
+    "notes": {
+      "type": "text"
+    }
+  }
+}

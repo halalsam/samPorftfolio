@@ -1,0 +1,41 @@
+{
+  "collectionName": "components_blocks_brands",
+  "info": {
+    "displayName": "Brand",
+    "icon": "brush",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "navLabel": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "body": {
+      "type": "blocks"
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "logoBackground": {
+      "type": "string",
+      "regex": "^#[0-9A-Fa-f]{6}$"
+    },
+    "palette": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.swatch"
+    },
+    "typefaces": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.typeface"
+    }
+  }
+}

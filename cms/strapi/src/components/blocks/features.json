@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_blocks_featuress",
+  "info": {
+    "displayName": "Features",
+    "icon": "star",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "navLabel": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "intro": {
+      "type": "text"
+    },
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.feature"
+    }
+  }
+}

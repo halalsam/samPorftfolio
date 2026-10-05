@@ -1,0 +1,68 @@
+{
+  "collectionName": "components_shared_arch_nodes",
+  "info": {
+    "displayName": "Architecture node",
+    "icon": "cube"
+  },
+  "options": {},
+  "attributes": {
+    "key": {
+      "type": "string",
+      "required": true,
+      "regex": "^[a-z0-9-]+$"
+    },
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "detail": {
+      "type": "string"
+    },
+    "icon": {
+      "type": "enumeration",
+      "enum": [
+        "smartphone",
+        "shield",
+        "shield-check",
+        "globe",
+        "shopping-bag",
+        "cpu",
+        "file-text",
+        "search",
+        "bar-chart",
+        "database",
+        "zap",
+        "credit-card",
+        "mail",
+        "key-round",
+        "megaphone",
+        "archive",
+        "server",
+        "radio",
+        "cloud-upload",
+        "cloud",
+        "bell",
+        "lock",
+        "git-branch",
+        "graduation-cap",
+        "users",
+        "plug",
+        "code",
+        "box",
+        "layers",
+        "workflow"
+      ],
+      "default": "box"
+    },
+    "tag": {
+      "type": "string"
+    },
+    "highlight": {
+      "type": "boolean",
+      "default": false
+    },
+    "connectsTo": {
+      "type": "text"
+    }
+  }
+}

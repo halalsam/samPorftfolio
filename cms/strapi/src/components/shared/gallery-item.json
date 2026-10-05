@@ -1,0 +1,40 @@
+{
+  "collectionName": "components_shared_gallery_items",
+  "info": {
+    "displayName": "Gallery item",
+    "icon": "landscape"
+  },
+  "options": {},
+  "attributes": {
+    "media": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "videos"
+      ]
+    },
+    "poster": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "frame": {
+      "type": "enumeration",
+      "enum": [
+        "none",
+        "browser",
+        "phone"
+      ],
+      "default": "none"
+    },
+    "caption": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    }
+  }
+}

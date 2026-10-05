@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_blocks_stacks",
+  "info": {
+    "displayName": "Stack",
+    "icon": "layer",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "navLabel": {
+      "type": "string"
+    },
+    "heading": {
+      "type": "string"
+    },
+    "groups": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.stack-group"
+    }
+  }
+}

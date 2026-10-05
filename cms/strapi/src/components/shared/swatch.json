@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_shared_swatchs",
+  "info": {
+    "displayName": "Swatch",
+    "icon": "paint"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "hex": {
+      "type": "string",
+      "required": true,
+      "regex": "^#[0-9A-Fa-f]{6}$"
+    }
+  }
+}

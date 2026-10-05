@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_shared_typefaces",
+  "info": {
+    "displayName": "Typeface",
+    "icon": "feather"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "role": {
+      "type": "string"
+    }
+  }
+}

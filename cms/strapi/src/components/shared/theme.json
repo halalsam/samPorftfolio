@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_shared_themes",
+  "info": {
+    "displayName": "Theme",
+    "icon": "brush"
+  },
+  "options": {},
+  "attributes": {
+    "mode": {
+      "type": "enumeration",
+      "enum": [
+        "dark",
+        "light"
+      ],
+      "default": "dark"
+    },
+    "accent": {
+      "type": "string",
+      "regex": "^#[0-9A-Fa-f]{6}$"
+    },
+    "background": {
+      "type": "string",
+      "regex": "^#[0-9A-Fa-f]{6}$"
+    },
+    "surface": {
+      "type": "string",
+      "regex": "^#[0-9A-Fa-f]{6}$"
+    }
+  }
+}

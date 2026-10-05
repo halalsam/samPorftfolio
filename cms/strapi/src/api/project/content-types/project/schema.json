@@ -1,0 +1,100 @@
+{
+  "kind": "collectionType",
+  "collectionName": "projects",
+  "info": {
+    "singularName": "project",
+    "pluralName": "projects",
+    "displayName": "Project",
+    "description": "Portfolio projects \u2014 case studies (with blocks) and archive entries"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "kind": {
+      "type": "enumeration",
+      "enum": [
+        "case-study",
+        "archive"
+      ],
+      "default": "case-study"
+    },
+    "order": {
+      "type": "integer",
+      "default": 99
+    },
+    "year": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string"
+    },
+    "platforms": {
+      "type": "string"
+    },
+    "tagline": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "text"
+    },
+    "live": {
+      "type": "boolean",
+      "default": false
+    },
+    "links": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.link"
+    },
+    "cover": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "theme": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.theme"
+    },
+    "hero": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.hero"
+    },
+    "seo": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.seo"
+    },
+    "blocks": {
+      "type": "dynamiczone",
+      "components": [
+        "blocks.overview",
+        "blocks.reel",
+        "blocks.media",
+        "blocks.gallery",
+        "blocks.features",
+        "blocks.stats",
+        "blocks.stack",
+        "blocks.architecture",
+        "blocks.timeline",
+        "blocks.brand",
+        "blocks.quote",
+        "blocks.rich-text",
+        "blocks.cta"
+      ]
+    }
+  }
+}
