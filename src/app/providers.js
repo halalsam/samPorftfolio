@@ -35,18 +35,39 @@ function useScrollRestoration() {
 
 export default function Providers({ children }) {
   useEffect(() => {
-    (async () => {
-      const LocomotiveScroll = (await import('locomotive-scroll')).default;
+    let scroller;
+    let cancelled = false;
+    import('locomotive-scroll').then(({ default: LocomotiveScroll }) => {
+      // Strict Mode mounts this twice in dev; only the surviving mount may
+      // create an instance, or two Lenis loops fight over the page.
+      if (cancelled) return;
+      scroller = new LocomotiveScroll({
+        lenisOptions: {
+          // While the page is locked (the preloader sets body overflow:
+          // hidden), hand wheel events back to the browser so the lock
+          // holds; Lenis would otherwise keep scrolling via scrollTo. The
+          // lock starts before this instance exists, so stop() can't be used.
+          prevent: () => document.body.style.overflow === 'hidden',
+          // With the OS reduced-motion setting on, the wheel scrolls natively
+          // instead of easing, matching MotionConfig reducedMotion="user".
+          smoothWheel: !window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+        },
+      });
       // Kept on window so utilities (e.g. scroll-to-top) can drive the
       // smooth scroller instead of fighting it with native scrollTo.
-      window.__lscroll = new LocomotiveScroll();
-    })();
+      window.__lscroll = scroller;
+    });
+    return () => {
+      cancelled = true;
+      if (!scroller) return;
+      scroller.destroy();
+      delete window.__lscroll;
+    };
   }, []);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
       document.body.style.cursor = 'default';
-      window.scrollTo(0, 0);
     }, 2000);
     return () => clearTimeout(timeout);
   }, []);

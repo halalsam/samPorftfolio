@@ -1,3 +1,5 @@
+// Lenis base styles, shipped by Locomotive for the Lenis version it bundles.
+import 'locomotive-scroll/locomotive-scroll.css';
 import '@/styles/globals.css';
 import Providers from './providers';
 

@@ -141,8 +141,6 @@ display: inline-flex;
  }
 
 
-html.lenis{height:auto}.lenis.lenis-smooth{scroll-behavior:auto}.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}.lenis.lenis-stopped{overflow:hidden}.lenis.lenis-scrolling iframe{pointer-events:none}
-
 .about span:not(:nth-child(6)) {
   position: absolute;
   left: 50%;
@@ -202,7 +200,6 @@ html.lenis{height:auto}.lenis.lenis-smooth{scroll-behavior:auto}.lenis.lenis-smo
 }
 html{
   background: rgba(160, 160, 160, 0.351);
-   scroll-snap-type: y mandatory;
 }
 
 .fill-low{
