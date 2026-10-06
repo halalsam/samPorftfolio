@@ -339,7 +339,46 @@ body:has(.preloader) #hero { transform: scale(0.8); }
   100% { transform: translate(0, 0); }
 }
 
+/* Tech-stack marquee — two seamless rows, opposite directions. Each track
+   holds two copies of its row; -50% loops without a visible seam. */
+.stack-marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+}
+.stack-track {
+  display: flex;
+  width: max-content;
+  animation: stack-scroll 36s linear infinite;
+}
+.stack-track-reverse {
+  animation-direction: reverse;
+}
+.stack-marquee:hover .stack-track,
+.stack-marquee.stack-paused .stack-track {
+  animation-play-state: paused;
+}
+@keyframes stack-scroll {
+  to {
+    transform: translateX(-50%);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
+  .stack-track {
+    animation: none;
+  }
   .preloader .pl-boot-code {
     animation: none;
   }

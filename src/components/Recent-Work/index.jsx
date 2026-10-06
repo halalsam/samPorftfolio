@@ -1,203 +1,312 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
-import { motion, useMotionValue, useSpring, useTransform, useVelocity } from 'framer-motion';
-import { thunder } from '@/lib/fonts';
-import SectionTitle from '@/components/Common/section-title';
+import localFont from 'next/font/local';
+import {
+  motion,
+  animate,
+  useInView,
+  useMotionValue,
+  useTransform,
+  useSpring,
+  useMotionValueEvent,
+} from 'framer-motion';
+import {
+  PiArrowLeftThin,
+  PiArrowRightThin,
+  PiArrowUpRightThin,
+} from 'react-icons/pi';
+import { slideUpTitle } from '@/animation/anim';
 import MagneticButton from '@/components/Common/magnetic-button';
-import WipeText from '@/components/ui/wipe-text';
-import { Draw, EASE_OUT, useAmount } from '@/components/ui/reveal';
 
-const FOCUS = 'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-signal';
-const UNDERLINE =
-  'relative after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 motion-reduce:after:transition-none';
-const SPRING = { stiffness: 220, damping: 26, mass: 0.6 };
+const thunder = localFont({
+  src: '../../fonts/Thunder/Thunder-BlackLC.otf',
+});
 
-const host = (href) => {
-  try {
-    return new URL(href).host.replace(/^www\./, '');
-  } catch {
-    return '';
-  }
-};
-// Case studies open here; archive entries say where they go.
-const kindOf = (card) => (card.internal ? 'Case study' : host(card.href));
+const Slide = ({ slide, x }) => {
+  const ref = useRef(null);
 
-/** A live case study's deployed site, kept outside the row's own link. */
-function LiveLink({ card }) {
-  return (
-    <MagneticButton>
-      <a
-        href={card.liveHref}
-        target="_blank"
-        rel="noreferrer"
-        aria-label={`${card.name}, live site`}
-        className={`group/live inline-flex items-center gap-2.5 py-2 text-sm text-white ${FOCUS}`}
-      >
-        <span aria-hidden className="h-2 w-2 rounded-full bg-signal" />
-        <span className={`${UNDERLINE} group-hover/live:after:scale-x-100 group-focus-visible/live:after:scale-x-100`}>Live</span>
-      </a>
-    </MagneticButton>
-  );
-}
+  // Parallax: the inner image drifts against the drag direction based on
+  // how far the slide sits from the viewport centre.
+  const imgX = useTransform(x, (latest) => {
+    const el = ref.current;
+    if (!el || typeof window === 'undefined') return 0;
+    const center = el.offsetLeft + latest + el.offsetWidth / 2;
+    return (center - window.innerWidth / 2) * -0.08;
+  });
 
-function Row({ card, index, dim, onEnter, onFocusRow, onBlurRow }) {
-  const Anchor = card.internal ? Link : 'a';
-  const external = card.internal ? {} : { target: '_blank', rel: 'noreferrer' };
-  return (
-    <li
-      onPointerEnter={(e) => e.pointerType !== 'touch' && onEnter(index)}
-      className={`transition-opacity duration-300 ${dim ? 'opacity-30' : 'opacity-100'}`}
-    >
-      <Draw className="h-px w-full text-white/15" delay={Math.min(index, 6) * 0.05} />
-      <div className="grid grid-cols-12 items-center gap-x-6 gap-y-4 py-7 sm:py-9">
-        <Anchor
-          href={card.href}
-          {...external}
-          onFocus={(e) => onFocusRow(index, e.currentTarget)}
-          onBlur={onBlurRow}
-          className={`group col-span-12 grid grid-cols-12 items-center gap-x-6 gap-y-3 lg:col-span-10 ${FOCUS}`}
-        >
-          {/* touch screens get the cover inline; pointers get the floating preview */}
-          {card.image ? (
-            <span className="relative col-span-12 block aspect-[16/10] overflow-hidden [@media(hover:hover)]:hidden">
-              <Image src={card.image} alt="" fill sizes="92vw" className="object-cover" />
-            </span>
-          ) : null}
-          <span className="order-3 col-span-12 text-sm lg:order-none lg:col-span-1">{card.year}</span>
-          <WipeText
-            color={card.accent}
-            className={`${thunder.className} order-2 col-span-12 text-[clamp(3rem,8.5vw,8.5rem)] uppercase leading-[0.86] text-white lg:order-none lg:col-span-7`}
-          >
-            {card.name}
-          </WipeText>
-          <span className="order-4 col-span-12 flex flex-col gap-1 text-sm lg:order-none lg:col-span-4">
-            <span>{card.role}</span>
-            <span className={`w-fit text-white ${UNDERLINE} group-hover:after:scale-x-100 group-focus-visible:after:scale-x-100`}>{kindOf(card)}</span>
-          </span>
-        </Anchor>
-        <div className="col-span-12 lg:col-span-2 lg:justify-self-end">
-          {card.internal && card.live && card.liveHref ? <LiveLink card={card} /> : null}
-        </div>
-      </div>
-    </li>
-  );
-}
+  // The card nearest the viewport centre sits at full size; the peeking
+  // neighbours settle slightly smaller and scale up as they slide in.
+  const scale = useTransform(x, (latest) => {
+    const el = ref.current;
+    if (!el || typeof window === 'undefined') return 0.9;
+    const center = el.offsetLeft + latest + el.offsetWidth / 2;
+    const dist = Math.abs(center - window.innerWidth / 2);
+    return 1 - Math.min(dist / window.innerWidth, 1) * 0.18;
+  });
 
-/** The cover of whichever row is hovered or focused, floating beside the
- *  pointer on a spring and leaning into its own sideways speed. */
-function Preview({ cards, active, armed, x, y, rotate, innerRef }) {
-  const show = active !== null;
+  // Pill reveal: fully visible while the card holds the centre, melting
+  // away as it slides toward the edges.
+  const reveal = useTransform(x, (latest) => {
+    const el = ref.current;
+    if (!el || typeof window === 'undefined') return 0;
+    const center = el.offsetLeft + latest + el.offsetWidth / 2;
+    const dist = Math.abs(center - window.innerWidth / 2);
+    return Math.max(0, Math.min(1, 1 - dist / (window.innerWidth * 0.3)));
+  });
+  const pillY = useTransform(reveal, (v) => (1 - v) * 24);
+
+  const Anchor = slide.internal ? Link : 'a';
+  const anchorProps = slide.internal
+    ? { href: slide.href }
+    : { href: slide.href, target: '_blank', rel: 'noreferrer' };
+
   return (
     <motion.div
-      ref={innerRef}
-      aria-hidden
-      style={{ x, y, rotate }}
-      className="pointer-events-none fixed left-0 top-0 z-30 hidden w-[clamp(16rem,24vw,24rem)] [@media(hover:hover)]:block"
+      ref={ref}
+      style={{ scale }}
+      className="group relative w-[88vw] shrink-0 sm:w-[64vw] lg:w-[54vw]"
     >
-      <motion.div
-        initial={false}
-        animate={{ opacity: show ? 1 : 0, scale: show ? 1 : 0.9 }}
-        transition={{ duration: 0.35, ease: EASE_OUT }}
-        className="relative aspect-[16/10] overflow-hidden bg-white/5"
-      >
-        {armed
-          ? cards.map((c, i) =>
-              c.image ? (
-                <Image
-                  key={c.key}
-                  src={c.image}
-                  alt=""
-                  fill
-                  sizes="24vw"
-                  className={`object-cover transition-opacity duration-300 ${i === active ? 'opacity-100' : 'opacity-0'}`}
-                />
-              ) : null,
-            )
-          : null}
-      </motion.div>
+      <Anchor {...anchorProps} draggable={false} className="block">
+        <div className="relative">
+          {/* YouTube-style hover: an accent-tinted backdrop and outline grow
+              out from behind the card, then fade back into the void. */}
+          <div
+            aria-hidden
+            style={{
+              backgroundColor: `${slide.accent}40`,
+              boxShadow: `0 0 0 1px ${slide.accent}90, 0 0 90px 0 ${slide.accent}40`,
+            }}
+            className="absolute -inset-3 rounded-2xl opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100 sm:-inset-4"
+          />
+          <div className="relative aspect-[14/9] w-full overflow-hidden">
+            <motion.img
+              src={slide.image}
+              alt={slide.name}
+              draggable={false}
+              style={{ x: imgX }}
+              className="absolute inset-0 h-full w-[120%] max-w-none object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+            />
+            <h3
+              className={`${thunder.className} pointer-events-none absolute bottom-2 left-4 z-10 whitespace-nowrap text-[clamp(3.5rem,8vw,8rem)] uppercase leading-none text-white mix-blend-difference sm:bottom-4 sm:left-6`}
+            >
+              {slide.name}
+            </h3>
+          </div>
+        </div>
+
+        <motion.div
+          style={{ opacity: reveal, y: pillY }}
+          className="mt-6 flex justify-center"
+        >
+          <span className="inline-flex items-center gap-3 rounded-full bg-white px-5 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-black sm:text-[11px]">
+            <span
+              style={{
+                backgroundColor: slide.accent,
+                boxShadow: `0 0 12px ${slide.accent}`,
+              }}
+              className="h-1.5 w-1.5 rounded-full"
+            />
+            {slide.role}
+            <span className="text-black/40">—</span>
+            <span className="text-black/60">{slide.year}</span>
+          </span>
+        </motion.div>
+      </Anchor>
+
+      {/* Live blob — separate anchor floating over the card (never nested
+          inside the card link) pointing at the deployed site. */}
+      {slide.live && slide.liveHref ? (
+        <div className="absolute right-5 top-5 z-20">
+          <MagneticButton>
+            <a
+              href={slide.liveHref}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`Visit ${slide.name} live`}
+              draggable={false}
+              className="group/live relative flex h-16 w-16 items-center justify-center rounded-full bg-[#e11d2e] text-[9px] font-bold uppercase tracking-wider text-white transition-colors duration-300 hover:bg-white"
+            >
+              {/* Default face: blinking white dot + LIVE, exits up-right on hover */}
+              <span className="relative flex items-center gap-1.5 transition-all duration-300 ease-out group-hover/live:-translate-y-3 group-hover/live:translate-x-3 group-hover/live:opacity-0">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-90" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white" />
+                </span>
+                Live
+              </span>
+              {/* Hover face: red arrow flies in from bottom-left toward top-right */}
+              <span className="absolute inset-0 flex -translate-x-3 translate-y-3 items-center justify-center text-2xl text-[#e11d2e] opacity-0 transition-all duration-300 ease-out group-hover/live:translate-x-0 group-hover/live:translate-y-0 group-hover/live:opacity-100">
+                <PiArrowUpRightThin />
+              </span>
+            </a>
+          </MagneticButton>
+        </div>
+      ) : null}
     </motion.div>
   );
-}
+};
 
-/**
- * The home page's project index. One row per project: year, the name set
- * big in Thunder, role and where it leads. Hovering (or keyboard-focusing)
- * a row wipes its name in that project's accent, quiets the other rows and
- * floats its cover beside the pointer. `cards` come from the content layer
- * (getWorkCards): case studies open /projects/[slug], archive entries link
- * out.
- */
+// `cards` come from the content layer (getWorkCards) via the home page —
+// case studies link to /projects/[slug], archive entries link out.
 const RecentWork = ({ cards = [] }) => {
-  const [active, setActive] = useState(null);
-  const [armed, setArmed] = useState(false); // covers load on first approach
-  const preview = useRef(null);
-  const visible = useRef(false);
+  const viewportRef = useRef(null);
+  const trackRef = useRef(null);
+  const headingRef = useRef(null);
+  const headingInView = useInView(headingRef, { once: true, margin: '-10%' });
+  const [maxDrag, setMaxDrag] = useState(0);
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
+  const stepRef = useRef(0);
+  const draggingRef = useRef(false);
 
   const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, SPRING);
-  const sy = useSpring(y, SPRING);
-  const lean = useAmount(1);
-  const vx = useVelocity(sx);
-  const rotate = useTransform([vx, lean], ([v, a]) => Math.max(-7, Math.min(7, v / 120)) * a);
+  const progress = useSpring(0, { stiffness: 120, damping: 30 });
 
-  // Park the preview beside a point, flipping to the left near the right
-  // edge. The first placement jumps, so it never flies in from a corner.
-  const place = (cx, cy) => {
-    const w = preview.current?.offsetWidth ?? 0;
-    const h = w * 0.625;
-    const nx = cx + 28 + w < window.innerWidth - 16 ? cx + 28 : cx - 28 - w;
-    const ny = Math.min(Math.max(cy - h / 2, 16), window.innerHeight - h - 16);
-    if (visible.current) {
-      x.set(nx);
-      y.set(ny);
-    } else {
-      x.jump(nx);
-      y.jump(ny);
-      sx.jump(nx);
-      sy.jump(ny);
-      visible.current = true;
-    }
+  useEffect(() => {
+    const measure = () => {
+      const track = trackRef.current;
+      const viewport = viewportRef.current;
+      if (!track || !viewport) return;
+      setMaxDrag(Math.max(track.scrollWidth - viewport.offsetWidth, 0));
+      const kids = track.children;
+      stepRef.current =
+        kids.length > 1 ? kids[1].offsetLeft - kids[0].offsetLeft : 0;
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, []);
+
+  useMotionValueEvent(x, 'change', (latest) => {
+    if (maxDrag > 0) progress.set(Math.min(-latest / maxDrag, 1));
+    setAtStart(latest >= -1);
+    setAtEnd(latest <= -maxDrag + 1);
+  });
+
+  const clampX = (value) => Math.max(Math.min(value, 0), -maxDrag);
+
+  // Momentum settles on the nearest slide so a flick never skips far ahead.
+  const snapTarget = (target) => {
+    const step = stepRef.current;
+    if (!step) return clampX(target);
+    return clampX(Math.round(target / step) * step);
   };
 
-  const hide = () => {
-    setActive(null);
-    visible.current = false;
+  const goTo = (direction) => {
+    const step = stepRef.current;
+    if (!step) return;
+    const target = snapTarget(
+      Math.round(x.get() / step) * step + direction * -step
+    );
+    animate(x, target, { type: 'spring', stiffness: 90, damping: 20 });
   };
 
-  const focusRow = (index, el) => {
-    setArmed(true);
-    const r = el.getBoundingClientRect();
-    place(r.left + r.width * 0.55, r.top + r.height / 2);
-    setActive(index);
-  };
+  // Horizontal trackpad swipes move the slider; vertical page scroll is
+  // left untouched.
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const onWheel = (e) => {
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      x.set(clampX(x.get() - e.deltaX * 0.6));
+    };
+    viewport.addEventListener('wheel', onWheel, { passive: false });
+    return () => viewport.removeEventListener('wheel', onWheel);
+  }, [x, maxDrag]);
 
   return (
-    <section id="work" className="my-24 scroll-mt-24">
-      <SectionTitle text="Recent Work" />
-      <ol
-        className="mt-12 sm:mt-16"
-        onPointerEnter={(e) => e.pointerType !== 'touch' && setArmed(true)}
-        onPointerMove={(e) => e.pointerType !== 'touch' && place(e.clientX, e.clientY)}
-        onPointerLeave={hide}
+    <section id="work" className="-mx-10 my-24 scroll-mt-24 overflow-hidden">
+      <div
+        ref={headingRef}
+        className="flex justify-start px-10 pb-12 text-[12vw] font-bold tracking-tight sm:text-[8vw]"
       >
-        {cards.map((card, i) => (
-          <Row
-            key={card.key}
-            card={card}
-            index={i}
-            dim={active !== null && active !== i}
-            onEnter={setActive}
-            onFocusRow={focusRow}
-            onBlurRow={hide}
-          />
+        {'Recent Work'.split('').map((char, index) => (
+          <span
+            className="relative inline-flex overflow-hidden text-center"
+            key={index}
+          >
+            <motion.span
+              className="inline-block"
+              variants={slideUpTitle}
+              custom={index}
+              initial="closed"
+              animate={headingInView ? 'open' : 'closed'}
+              transition={{ ease: [0.16, 1, 0.3, 1] }}
+            >
+              {char === ' ' ? '' : char}
+            </motion.span>
+          </span>
         ))}
-      </ol>
-      <Draw className="h-px w-full text-white/15" />
-      <Preview cards={cards} active={active} armed={armed} x={sx} y={sy} rotate={rotate} innerRef={preview} />
+      </div>
+
+      <div className="relative">
+        <div ref={viewportRef} className="cursor-grab active:cursor-grabbing">
+          <motion.div
+            ref={trackRef}
+            drag="x"
+            style={{ x }}
+            dragConstraints={{ left: -maxDrag, right: 0 }}
+            dragElastic={0.04}
+            dragTransition={{
+              power: 0.2,
+              timeConstant: 180,
+              modifyTarget: snapTarget,
+            }}
+            onDragStart={() => {
+              draggingRef.current = true;
+            }}
+            onDragEnd={() => {
+              // Let the trailing click fire (and get swallowed) before
+              // re-arming link navigation.
+              requestAnimationFrame(() => {
+                draggingRef.current = false;
+              });
+            }}
+            onClickCapture={(e) => {
+              if (draggingRef.current) {
+                e.preventDefault();
+                e.stopPropagation();
+              }
+            }}
+            className="flex w-max items-center gap-[6vw] px-[6vw] pb-16 pt-2 sm:px-[18vw] lg:px-[23vw]"
+          >
+            {cards.map((slide) => (
+              <Slide key={slide.key} slide={slide} x={x} />
+            ))}
+          </motion.div>
+        </div>
+
+        <button
+          type="button"
+          aria-label="Previous project"
+          onClick={() => goTo(-1)}
+          disabled={atStart}
+          className="absolute left-4 top-1/2 z-20 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-2xl text-white backdrop-blur-md transition-all duration-300 hover:bg-white hover:text-black disabled:pointer-events-none disabled:opacity-25 sm:left-8"
+        >
+          <PiArrowLeftThin />
+        </button>
+        <button
+          type="button"
+          aria-label="Next project"
+          onClick={() => goTo(1)}
+          disabled={atEnd}
+          className="absolute right-4 top-1/2 z-20 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/40 text-2xl text-white backdrop-blur-md transition-all duration-300 hover:bg-white hover:text-black disabled:pointer-events-none disabled:opacity-25 sm:right-8"
+        >
+          <PiArrowRightThin />
+        </button>
+      </div>
+
+      <div className="px-10 sm:px-16">
+        <div className="relative h-px w-full bg-neutral-800">
+          <motion.div
+            style={{ scaleX: progress }}
+            className="absolute inset-0 origin-left bg-white"
+          />
+        </div>
+      </div>
     </section>
   );
 };

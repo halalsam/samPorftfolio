@@ -40,7 +40,9 @@ function Item({ item, className, depth, sizes, step = 0, centered = false }) {
 }
 
 /** Phones step down a staircase on wide screens (each at its own drift) and
- *  become a swipeable row on small ones. */
+ *  become a swipeable row on small ones. `lg:snap-align-none` matters: once
+ *  the row stops scrolling, the page itself (html has scroll-snap-type: y
+ *  mandatory) would adopt the phones' snap points and pin the page to them. */
 function Staircase({ items }) {
   return (
     <div className={`${BLEED} flex snap-x snap-mandatory items-start gap-5 overflow-x-auto px-5 pb-2 sm:px-10 lg:mx-0 lg:snap-none lg:justify-between lg:gap-10 lg:overflow-visible lg:px-0`}>
@@ -52,7 +54,7 @@ function Staircase({ items }) {
           depth={i * 45}
           sizes="(min-width: 1024px) 26vw, 68vw"
           centered
-          className="w-[68vw] max-w-[300px] shrink-0 snap-center lg:mt-[calc(var(--step)*7vw)] lg:w-auto lg:max-w-[340px] lg:flex-1"
+          className="w-[68vw] max-w-[300px] shrink-0 snap-center lg:snap-align-none lg:mt-[calc(var(--step)*7vw)] lg:w-auto lg:max-w-[340px] lg:flex-1"
         />
       ))}
     </div>
