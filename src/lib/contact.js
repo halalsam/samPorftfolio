@@ -1,7 +1,7 @@
 // Contact details, shared by the footer and /contact. Copied exactly from
 // the original footer, including the phone: its display and dial strings
 // differ there too, and are left as found.
-export const EMAIL = { label: '05sameerk@gmail.com', href: 'mailto:05sameerk@gmail.com' };
+export const EMAIL = { label: 'sam@samcode.in', href: 'mailto:sam@samcode.in' };
 
 export const PHONE = { label: '+91 9321818850', href: 'tel:+919321818500' };
 

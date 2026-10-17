@@ -5,6 +5,7 @@ import { thunder } from '@/lib/fonts';
 import { Draw, Rise } from '@/components/ui/reveal';
 import WipeText from '@/components/ui/wipe-text';
 import { EMAIL, PHONE, SOCIALS } from '@/lib/contact';
+import EnquiryForm from './EnquiryForm';
 
 const FOCUS = 'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal';
 
@@ -53,7 +54,8 @@ function Channel({ label, value, href, external = false, action = null }) {
   );
 }
 
-/** /contact — every channel from the footer, one per row, nothing invented. */
+/** /contact — every channel from the footer, one per row, nothing invented,
+ *  then the enquiry form. */
 export default function ContactSheet() {
   return (
     <div className="pt-16 sm:pt-24">
@@ -70,6 +72,8 @@ export default function ContactSheet() {
         ))}
       </ul>
       <Draw className="h-px w-full text-white/15" />
+
+      <EnquiryForm />
     </div>
   );
 }
