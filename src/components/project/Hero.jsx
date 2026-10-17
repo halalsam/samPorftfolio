@@ -4,20 +4,26 @@ import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { thunder } from '@/lib/fonts';
 import { isVideo } from '@/lib/content/normalize';
-import { Curtain, Draw, EASE_OUT, Rise, useAmount } from '@/components/ui/reveal';
+import { Curtain, Draw, EASE_OUT, HIDDEN, MASK, MASKED, Rise, useAmount } from '@/components/ui/reveal';
 import LinkButton from './primitives/LinkButton';
 import { MediaFill, aspectOf } from './primitives/Media';
 import { BrowserFrame, PhoneFrame } from './primitives/Frames';
 import { BLEED } from './theme';
 
 const rise = {
-  hidden: { y: '105%' },
-  visible: (i = 0) => ({ y: '0%', transition: { delay: 0.1 + i * 0.045, duration: 0.9, ease: [0.16, 1, 0.3, 1] } }),
+  hidden: { y: HIDDEN },
+  visible: (i = 0) => ({ y: '0%', transition: { delay: 0.12 + i * 0.04, duration: 1, ease: EASE_OUT } }),
 };
 
 // The page's one orchestrated load: title letters, then the tagline, the
 // links, the spec rule and the media lifting its curtain.
 const AT = { tagline: 0.45, media: 0.65, links: 0.75, spec: 0.85 };
+
+const lift = (delay) => ({
+  initial: { opacity: 0, y: 14 },
+  animate: { opacity: 1, y: 0 },
+  transition: { delay, duration: 0.8, ease: EASE_OUT },
+});
 
 /** Video or image heroes run edge to edge across the panel and grow from
  *  slightly inset to full bleed as they scroll up to the top. */
@@ -64,17 +70,18 @@ function Spec({ project }) {
     { label: 'Platforms', value: project.platforms.join(', ') },
   ].filter((r) => r.value);
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: AT.spec, duration: 0.8 }} className="mt-14 sm:mt-20">
+    <div className="mt-14 sm:mt-20">
       <Draw className="h-px w-full text-pd-line" delay={AT.spec} />
+      {/* each column follows the rule's pen as it draws across */}
       <dl className="grid grid-cols-2 gap-x-8 gap-y-6 pt-6 md:grid-cols-4">
-        {rows.map((r) => (
-          <div key={r.label}>
+        {rows.map((r, i) => (
+          <motion.div key={r.label} {...lift(AT.spec + 0.1 + i * 0.08)}>
             <dt className="text-sm text-pd-faint">{r.label}</dt>
             <dd className="mt-1.5 text-base leading-snug text-pd-fg">{r.value}</dd>
-          </div>
+          </motion.div>
         ))}
         {project.live ? (
-          <div>
+          <motion.div {...lift(AT.spec + 0.1 + rows.length * 0.08)}>
             <dt className="text-sm text-pd-faint">Status</dt>
             <dd className="mt-1.5 flex items-center gap-2.5 text-base text-pd-fg">
               <span aria-hidden className="relative flex h-2 w-2">
@@ -83,10 +90,10 @@ function Spec({ project }) {
               </span>
               Live
             </dd>
-          </div>
+          </motion.div>
         ) : null}
       </dl>
-    </motion.div>
+    </div>
   );
 }
 
@@ -98,9 +105,8 @@ export default function Hero({ project }) {
     <header className="flex flex-col">
       <h1 className={`${thunder.className} mt-6 flex flex-wrap text-[clamp(5.5rem,19vw,19rem)] uppercase leading-[0.9] text-pd-fg`} aria-label={project.title}>
         {project.title.split('').map((char, i) => (
-          // mask extends above/below the line box so tall glyphs never clip
-          <span key={i} aria-hidden className="-my-[0.14em] inline-flex overflow-hidden py-[0.14em]">
-            <motion.span variants={rise} custom={i} initial="hidden" animate="visible" className="inline-block">
+          <span key={i} aria-hidden className={MASK}>
+            <motion.span variants={rise} custom={i} initial="hidden" animate="visible" className={MASKED}>
               {char === ' ' ? ' ' : char}
             </motion.span>
           </span>
@@ -118,9 +124,7 @@ export default function Hero({ project }) {
         ) : null}
         {primary ? (
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: AT.links, duration: 0.8, ease: EASE_OUT }}
+            {...lift(AT.links)}
             className="flex flex-wrap items-center gap-x-10 gap-y-6 lg:col-span-5 lg:justify-self-end"
           >
             <LinkButton link={primary} primary />

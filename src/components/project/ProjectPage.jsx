@@ -1,7 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { PiArrowLeftThin } from 'react-icons/pi';
+import { EASE_OUT } from '@/components/ui/reveal';
 import { themeVars } from './theme';
 import Hero from './Hero';
 import BlockRenderer, { chaptersOf } from './BlockRenderer';
@@ -22,7 +24,12 @@ export default function ProjectPage({ project, adjacent }) {
       style={themeVars(project.theme)}
       className="relative z-20 flex w-full flex-col overflow-x-clip rounded-[50px] bg-pd-bg px-5 pb-16 pt-10 text-pd-fg sm:px-10 sm:pt-14 lg:px-14"
     >
-      <div className="flex items-center justify-between gap-4 text-sm">
+      <motion.div
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: EASE_OUT }}
+        className="flex items-center justify-between gap-4 text-sm"
+      >
         <Link
           href="/#work"
           className="group inline-flex items-center gap-2 text-pd-muted outline-none transition-colors hover:text-pd-fg focus-visible:text-pd-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pd-accent"
@@ -35,7 +42,7 @@ export default function ProjectPage({ project, adjacent }) {
             Project {adjacent.index} of {adjacent.total}
           </span>
         ) : null}
-      </div>
+      </motion.div>
 
       <div className="mt-14">
         <Hero project={project} />

@@ -21,11 +21,19 @@ export const EASE_IN_OUT = [0.7, 0, 0.2, 1];
 // Fire slightly before the element is fully on screen.
 const VIEW = { once: true, margin: '0px 0px -12% 0px' };
 
+// Masked type: the moving span carries the padding (pulled back by the
+// mask's negative margins), so tall glyphs and descenders never clip, and
+// HIDDEN is a percentage of the *whole* mask. If the padding sat on the mask
+// instead, 100% of the bare line box would leave glyph tops peeking out of
+// the bottom under tight display leading, visible before the reveal runs.
+export const MASK = '-my-[0.14em] inline-flex overflow-hidden';
+export const MASKED = 'inline-block py-[0.14em]';
+export const HIDDEN = '101%';
+
 /**
  * Rise — a string set word by word, each word rising out of its own mask. A
- * "\n" in the text starts a new line. Masks are padded above and below (and
- * pulled back with negative margins) so tall glyphs and descenders never
- * clip; inline-flex keeps them on the text baseline.
+ * "\n" in the text starts a new line. inline-flex keeps masks on the text
+ * baseline.
  */
 export function Rise({ as: Tag = 'span', text, className = '', delay = 0, stagger = 0.035, duration = 0.9 }) {
   const ref = useRef(null);
@@ -46,11 +54,11 @@ export function Rise({ as: Tag = 'span', text, className = '', delay = 0, stagge
                 return (
                   <Fragment key={wi}>
                     {wi > 0 ? ' ' : null}
-                    <span className="-my-[0.14em] inline-flex overflow-hidden py-[0.14em]">
+                    <span className={MASK}>
                       <motion.span
-                        className="inline-block"
-                        initial={{ y: '110%' }}
-                        animate={{ y: inView ? '0%' : '110%' }}
+                        className={MASKED}
+                        initial={{ y: HIDDEN }}
+                        animate={{ y: inView ? '0%' : HIDDEN }}
                         transition={{ duration, delay: delay + i * stagger, ease: EASE_OUT }}
                       >
                         {word}
