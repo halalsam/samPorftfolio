@@ -5,12 +5,17 @@ import Hero2 from '@/components/Layout/Hero2';
 import AboutMe from '@/components/About-me';
 import Wrapper from '@/components/Wrapper';
 import AppContext from '@/context/globalContext';
-import { getWorkCards } from '@/lib/content';
+import JsonLd from '@/components/JsonLd';
+import { getCaseStudies, getWorkCards } from '@/lib/content';
+import { SITE, pageMetadata, profilePageJsonLd } from '@/lib/site';
+
+export const metadata = pageMetadata({ title: SITE.title, path: '/', absoluteTitle: true });
 
 export default async function Home() {
-  const cards = await getWorkCards();
+  const [cards, caseStudies] = await Promise.all([getWorkCards(), getCaseStudies()]);
   return (
     <AppContext>
+      <JsonLd data={profilePageJsonLd(caseStudies)} />
       <div className="flex min-h-screen flex-col">
         <CustomCursor />
         <Page>

@@ -81,10 +81,10 @@ const Text = ({ scrollYProgress }) => {
     >
       <div className="hero-title1 flex h-full w-full flex-col px-10 text-[35vw] leading-tight sm:mb-0 sm:items-center sm:text-[20vw]">
         <MagneticButton>
-          <div className="flex justify-center">
+          <h1 aria-label="Sam, full-stack developer and designer" className="flex justify-center">
             {heroTitle.split('').map((word, index) => {
               return (
-                <motion.h1
+                <motion.span
                   key={index}
                   variants={slideUpTitle}
                   initial="initial"
@@ -93,10 +93,10 @@ const Text = ({ scrollYProgress }) => {
                   className={`hero-title relative flex text-end font-medium  ${thunder.className}`}
                 >
                   <span className=" inline-block text-end">{word}</span>
-                </motion.h1>
+                </motion.span>
               );
             })}
-          </div>
+          </h1>
         </MagneticButton>
 
         <div className="hero-para1 relative -mt-2 flex w-full justify-center sm:-mt-6">

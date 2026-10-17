@@ -1,12 +1,14 @@
 'use client';
 
 import { useRef } from 'react';
+import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { thunder } from '@/lib/fonts';
 import { useAmount } from '@/components/ui/reveal';
 import WipeText from '@/components/ui/wipe-text';
 import { EMAIL, PHONE, SOCIALS } from '@/lib/contact';
 import { useYear } from '@/hooks/useYear';
+import { Logo } from '@/components/Logo';
 
 const UNDERLINE =
   'relative after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 group-hover:after:scale-x-100 group-focus-visible:after:scale-x-100 motion-reduce:after:transition-none';
@@ -51,7 +53,12 @@ export default function Footer() {
               </li>
             ))}
           </ul>
-          <p>© {year} Sam. All rights reserved.</p>
+          <div className="flex items-end gap-4">
+            <Link href="/" aria-label="Sam, home" className={`text-white ${FOCUS}`}>
+              <Logo textClassName="text-2xl font-bold leading-none" markSize={12} />
+            </Link>
+            <p>© {year} Sameer Khan. All rights reserved.</p>
+          </div>
         </div>
       </motion.div>
     </footer>
