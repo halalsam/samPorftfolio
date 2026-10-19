@@ -25,7 +25,7 @@ src/components/shared/*     link, theme, hero, seo, fact, feature, stat, stack-g
 
 ## Behaviour
 
-- **Source switch:** when `STRAPI_URL` is set, `lib/content` reads `/api/projects` with the populate query built from `lib/content/blocks.js`, using Strapi v5 dynamic-zone `on` fragments. Responses are cached and tagged `projects`, and the webhook purges them.
+- **Source switch:** when `STRAPI_URL` is set, `lib/content` reads `/api/projects` with the populate query built from `lib/content/blocks.ts`, using Strapi v5 dynamic-zone `on` fragments. Responses are cached and tagged `projects`, and the webhook purges them.
 - **Fallback:** if Strapi is down or misconfigured, the site logs a warning and serves the local `src/content` files, so it never renders empty.
 - **New slugs:** a slug published in Strapi renders on its first request (`dynamicParams`) without a redeploy.
 - **Images:** `next.config.js` adds the Strapi host to the allowed image domains automatically.

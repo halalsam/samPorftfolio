@@ -10,13 +10,13 @@ Pages and components never import these files directly. They read through `src/l
 | `getCaseStudies()` / `getProject(slug)` | `/projects/[slug]` pages and their static params |
 | `getAdjacentProjects(slug)` | the "03 / 05" counter and the "Next project" footer |
 
-Both sources go through `lib/content/normalize.js`, so a block can't tell whether its data came from a file or from Strapi.
+Both sources go through `lib/content/normalize.ts`, so a block can't tell whether its data came from a file or from Strapi.
 
 ## Adding a case study
 
 1. Put media in `public/projects/<slug>/`.
-2. Create `projects/<slug>.js`. Copy `garageflow.js` as a starting point.
-3. Add it to `projects/index.js`. On-site order comes from `order`, not from the list order.
+2. Create `projects/<slug>.ts`. Copy `garageflow.ts` as a starting point.
+3. Add it to `projects/index.ts`. On-site order comes from `order`, not from the list order.
 
 ```js
 {
@@ -31,7 +31,7 @@ Both sources go through `lib/content/normalize.js`, so a block can't tell whethe
 }
 ```
 
-Use `image(url, alt, w, h)` and `video(url, { alt, width, height, poster })` from `media.js` for media. Always give real dimensions, because they set aspect ratios and prevent layout shift.
+Use `image(url, alt, w, h)` and `video(url, { alt, width, height, poster })` from `media.ts` for media. Always give real dimensions, because they set aspect ratios and prevent layout shift.
 
 ### Every page is its own design
 
@@ -65,8 +65,8 @@ Any block can also take a `navLabel`.
 **Adding a new block type** takes four steps:
 
 1. Add a component in `components/project/blocks/`.
-2. Register it in `BlockRenderer.jsx`.
-3. Add an entry in `lib/content/blocks.js`.
+2. Register it in `BlockRenderer.tsx`.
+3. Add an entry in `lib/content/blocks.ts`.
 4. Add a schema in `cms/strapi/src/components/blocks/`.
 
 Unknown block types are skipped in production and flagged in development.

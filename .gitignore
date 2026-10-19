@@ -33,3 +33,6 @@ yarn-error.log*
 
 # Claude Code local tooling config
 .claude/
+
+# typescript
+*.tsbuildinfo

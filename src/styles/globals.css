@@ -6,7 +6,7 @@
    values are set per case study on a wrapper, not on :root. */
 @theme inline {
   /* Project-page theme tokens. Each case study sets these CSS variables from
-     its own `theme` (see components/project/theme.js). */
+     its own `theme` (see components/project/theme.ts). */
   --color-pd-bg: var(--pd-bg);
   --color-pd-fg: var(--pd-fg);
   --color-pd-muted: var(--pd-muted);
@@ -312,7 +312,7 @@
 
   /* Preloader initial states — prevent a flash of final content on first paint,
    before GSAP's useEffect runs. These mirror the gsap.set() calls in
-   src/components/pre-loader/index.jsx, and only apply while the preloader
+   src/components/pre-loader/index.tsx, and only apply while the preloader
    overlay is actually mounted (pages rendered with showPreloader={false}
    must not hide their hero/nav). GSAP overwrites them as it animates. */
   body:has(.preloader) .hero-title {
