@@ -1,4 +1,4 @@
-const WIPE = 'transition-transform duration-700 ease-[cubic-bezier(0.7,0,0.2,1)] motion-reduce:transition-none';
+const WIPE = 'transition-transform duration-700 ease-in-out-sharp motion-reduce:transition-none';
 
 /**
  * Text that a second colour wipes across, left to right, when an ancestor

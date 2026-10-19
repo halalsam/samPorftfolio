@@ -13,7 +13,8 @@ module.exports = {
   	extend: {
   		transitionTimingFunction: {
   			'in-expo': 'cubic-bezier(0.95, 0.05, 0.795, 0.035)',
-  			'out-expo': 'cubic-bezier(0.16, 1, 0.3, 1)'
+  			'out-expo': 'cubic-bezier(0.16, 1, 0.3, 1)',
+  			'in-out-sharp': 'cubic-bezier(0.7, 0, 0.2, 1)'
   		},
   		transitionProperty: {
   			height: 'height'

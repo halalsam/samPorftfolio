@@ -6,7 +6,7 @@ import { thunder } from '@/lib/fonts';
 import { Draw } from '@/components/ui/reveal';
 import WipeText from '@/components/ui/wipe-text';
 
-const RISE = 'transition-transform duration-700 ease-[cubic-bezier(0.7,0,0.2,1)] motion-reduce:transition-none';
+const RISE = 'transition-transform duration-700 ease-in-out-sharp motion-reduce:transition-none';
 
 /** Footer hand-off to the next case study (wraps around). Hover or focus
  *  wipes the title through in the next project's own accent, the same move

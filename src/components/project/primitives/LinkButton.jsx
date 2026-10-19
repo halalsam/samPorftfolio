@@ -5,7 +5,7 @@ import MagneticButton from '@/components/Common/magnetic-button';
 // What each kind of link is, in words. The label is usually the address.
 const KIND = { live: 'Live site', web: 'Website', repo: 'Source', store: 'App store' };
 
-const WIPE = 'transition-transform duration-500 ease-[cubic-bezier(0.7,0,0.2,1)] motion-reduce:transition-none';
+const WIPE = 'transition-transform duration-500 ease-in-out-sharp motion-reduce:transition-none';
 
 function SlabText({ kind, label }) {
   return (
