@@ -6,7 +6,9 @@ import { animate, useInView } from 'framer-motion';
 /** Counts up once when scrolled into view. Non-numeric values render as-is. */
 export default function Counter({ value, decimals = 0, prefix = '', suffix = '', className = '' }) {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-15%' });
+  // Vertical inset only: a horizontal one would hide numbers at the start of
+  // a line (inside the left 15%) from the observer, leaving them at 0.
+  const inView = useInView(ref, { once: true, margin: '-15% 0px' });
   const numeric = typeof value === 'number';
   const [shown, setShown] = useState(numeric ? 0 : value);
 

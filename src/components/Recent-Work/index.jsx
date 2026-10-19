@@ -88,7 +88,7 @@ function Row({ card, index, dim, onEnter, onFocusRow, onBlurRow }) {
 
 /** The cover of whichever row is hovered or focused, floating beside the
  *  pointer on a spring and leaning into its own sideways speed. */
-function Preview({ cards, active, armed, x, y, rotate, innerRef }) {
+function Preview({ cards, active, loaded, x, y, rotate, innerRef }) {
   const show = active !== null;
   return (
     <motion.div
@@ -103,20 +103,18 @@ function Preview({ cards, active, armed, x, y, rotate, innerRef }) {
         transition={{ duration: 0.35, ease: EASE_OUT }}
         className="relative aspect-[16/10] overflow-hidden bg-white/5"
       >
-        {armed
-          ? cards.map((c, i) =>
-              c.image ? (
-                <Image
-                  key={c.key}
-                  src={c.image}
-                  alt=""
-                  fill
-                  sizes="24vw"
-                  className={`object-cover transition-opacity duration-300 ${i === active ? 'opacity-100' : 'opacity-0'}`}
-                />
-              ) : null,
-            )
-          : null}
+        {cards.map((c, i) =>
+          c.image && loaded.has(i) ? (
+            <Image
+              key={c.key}
+              src={c.image}
+              alt=""
+              fill
+              sizes="24vw"
+              className={`object-cover transition-opacity duration-300 ${i === active ? 'opacity-100' : 'opacity-0'}`}
+            />
+          ) : null,
+        )}
       </motion.div>
     </motion.div>
   );
@@ -132,7 +130,15 @@ function Preview({ cards, active, armed, x, y, rotate, innerRef }) {
  */
 const RecentWork = ({ cards = [] }) => {
   const [active, setActive] = useState(null);
-  const [armed, setArmed] = useState(false); // covers load on first approach
+  // Covers load as the pointer nears their row (the row and its neighbours)
+  // and stay loaded, so the list never pulls every cover at once and a
+  // click on a project isn't stuck behind downloads it doesn't need.
+  const [loaded, setLoaded] = useState(() => new Set());
+  const load = (index) =>
+    setLoaded((prev) => {
+      const near = [index - 1, index, index + 1].filter((i) => i >= 0 && i < cards.length && !prev.has(i));
+      return near.length ? new Set([...prev, ...near]) : prev;
+    });
   const preview = useRef(null);
   const visible = useRef(false);
 
@@ -171,13 +177,13 @@ const RecentWork = ({ cards = [] }) => {
   // A row can arrive under a still cursor (scrolling, or the first enter),
   // so place the preview from the enter event itself, not just on move.
   const enterRow = (index, cx, cy) => {
-    setArmed(true);
+    load(index);
     place(cx, cy);
     setActive(index);
   };
 
   const focusRow = (index, el) => {
-    setArmed(true);
+    load(index);
     const r = el.getBoundingClientRect();
     place(r.left + r.width * 0.55, r.top + r.height / 2);
     setActive(index);
@@ -188,7 +194,6 @@ const RecentWork = ({ cards = [] }) => {
       <SectionTitle text="Recent Work" />
       <ol
         className="mt-12 sm:mt-16"
-        onPointerEnter={(e) => e.pointerType !== 'touch' && setArmed(true)}
         onPointerMove={(e) => e.pointerType !== 'touch' && place(e.clientX, e.clientY)}
         onPointerLeave={hide}
       >
@@ -205,7 +210,7 @@ const RecentWork = ({ cards = [] }) => {
         ))}
       </ol>
       <Draw className="h-px w-full text-white/15" />
-      <Preview cards={cards} active={active} armed={armed} x={sx} y={sy} rotate={rotate} innerRef={preview} />
+      <Preview cards={cards} active={active} loaded={loaded} x={sx} y={sy} rotate={rotate} innerRef={preview} />
     </section>
   );
 };

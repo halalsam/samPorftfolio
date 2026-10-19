@@ -13,7 +13,7 @@ const archive = [
     role: 'Design & Development',
     live: false,
     links: [{ label: 'GitHub', href: 'https://github.com/Sammk21/AfStore', kind: 'repo' }],
-    cover: image('/videos/AF.gif', 'Aelzel store', 1200, 926),
+    cover: image('/images/archive/aelzel.webp', 'Aelzel store', 640, 494),
     theme: { mode: 'dark', accent: '#D4A373' },
   },
   {
@@ -25,7 +25,7 @@ const archive = [
     role: 'Design & Development',
     live: false,
     links: [{ label: 'GitHub', href: 'https://github.com/Sammk21/dbz-store-of', kind: 'repo' }],
-    cover: image('/images/dividebyzero.webp', 'Divide by Zero store', 480, 300),
+    cover: image('/images/archive/dividebyzero.webp', 'Divide by Zero store', 480, 300),
     theme: { mode: 'dark', accent: '#8B5CF6' },
   },
   {
@@ -37,7 +37,7 @@ const archive = [
     role: 'Development',
     live: true,
     links: [{ label: 'onlyeducation.in', href: 'https://onlyeducation.in', kind: 'live' }],
-    cover: image('/images/onlyeducation.webp', 'Only Education', 480, 270),
+    cover: image('/images/archive/onlyeducation.webp', 'Only Education', 480, 270),
     theme: { mode: 'dark', accent: '#38BDF8' },
   },
 ];
