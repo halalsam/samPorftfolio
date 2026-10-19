@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useEffect, useState, type ReactNode } from 'react';
+import { useActionState, useEffect, useRef, type ReactNode } from 'react';
 import { thunder } from '@/lib/fonts';
 import { Draw, Rise } from '@/components/ui/reveal';
 import WipeText from '@/components/ui/wipe-text';
@@ -54,8 +54,12 @@ function Row({ id, label, optional = false, error, children }: RowProps) {
 export default function EnquiryForm() {
   const [state, formAction, pending] = useActionState(submitEnquiry, initialState);
   // Stamped once on the client, so the server can drop instant (bot) submits.
-  const [startedAt, setStartedAt] = useState('');
-  useEffect(() => setStartedAt(String(Date.now())), []);
+  // Written straight to the DOM and left out of React's props, so the reset
+  // React does after each submit can't clear it (an unstamped submit is dropped).
+  const startedAt = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (startedAt.current) startedAt.current.value = String(Date.now());
+  }, []);
 
   const errors = state.fieldErrors ?? {};
   const values = state.values ?? {};
@@ -92,7 +96,7 @@ export default function EnquiryForm() {
             <label htmlFor="enquiry-fax">Leave this empty</label>
             <input id="enquiry-fax" type="text" name="contact_me_by_fax" tabIndex={-1} autoComplete="off" defaultValue="" />
           </div>
-          <input type="hidden" name="started_at" value={startedAt} />
+          <input ref={startedAt} type="hidden" name="started_at" />
 
           <ul>
             <Row id="enquiry-name" label="Name" error={errors.name}>

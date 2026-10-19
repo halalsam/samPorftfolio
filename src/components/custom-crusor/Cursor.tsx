@@ -66,6 +66,7 @@ const CustomCursor = ({ s, videoSrc }: { s?: number; videoSrc?: string }) => {
             objectPosition: 'center',
           }}
           src={videoSrc}
+          alt=""
         />
       )}
     </div>

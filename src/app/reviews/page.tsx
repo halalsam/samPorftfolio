@@ -21,7 +21,7 @@ export default function ReviewPage() {
           </p>
           <h1 className="text-3xl font-semibold mb-3">Thank you.</h1>
           <p className="text-white/60">
-            Your review's been logged. Appreciate you taking the time.
+            Your review&rsquo;s been logged. Appreciate you taking the time.
           </p>
         </div>
       </main>
@@ -35,7 +35,7 @@ export default function ReviewPage() {
           {"> leave a review"}
         </p>
         <h1 className="text-4xl font-semibold tracking-tight mb-2">
-          How'd it go?
+          How&rsquo;d it go?
         </h1>
         <p className="text-white/60 mb-12">
           A few quick questions about the project we built together.

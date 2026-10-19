@@ -129,7 +129,8 @@ export default function Architecture({ block, meta }: BlockProps<ArchitectureBlo
   }, [block]);
 
   useEffect(() => {
-    measure();
+    // A ResizeObserver reports once as soon as it starts observing, so this
+    // also takes the first measurement.
     const ro = new ResizeObserver(measure);
     if (wrap.current) ro.observe(wrap.current);
     document.fonts?.ready.then(measure);
