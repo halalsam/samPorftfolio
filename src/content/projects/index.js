@@ -5,8 +5,10 @@ import garageflow from './garageflow';
 import ckDarji from './ck-darji';
 import firstmerge from './firstmerge';
 import ladeDigital from './lade-digital';
+import courtpilot from './courtpilot';
+import prmpt from './prmpt';
 import archive from './archive';
 
-const projects = [x36, garageflow, ckDarji, firstmerge, ladeDigital, ...archive];
+const projects = [x36, garageflow, ckDarji, firstmerge, ladeDigital, courtpilot, prmpt, ...archive];
 
 export default projects;

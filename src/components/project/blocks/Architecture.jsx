@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Archive, BarChart3, Bell, Box, Cloud, CloudUpload, Code2, Cpu, CreditCard, Database, FileText, GitBranch, Globe,
   GraduationCap, KeyRound, Layers, Lock, Mail, Megaphone, Plug, Radio, Search, Server, Shield, ShieldCheck,
-  ShoppingBag, Smartphone, Users, Workflow, Zap, ChevronDown,
+  ShoppingBag, Smartphone, Timer, Tv, Monitor, Users, Workflow, Zap, ChevronDown,
 } from 'lucide-react';
 import BlurFade from '@/components/ui/blur-fade';
 import Section from '../primitives/Section';
@@ -17,7 +17,7 @@ export const ARCH_ICONS = {
   'credit-card': CreditCard, mail: Mail, 'key-round': KeyRound, megaphone: Megaphone, archive: Archive,
   server: Server, radio: Radio, 'cloud-upload': CloudUpload, cloud: Cloud, bell: Bell, lock: Lock,
   'git-branch': GitBranch, 'graduation-cap': GraduationCap, users: Users, plug: Plug, code: Code2, box: Box,
-  layers: Layers, workflow: Workflow,
+  layers: Layers, workflow: Workflow, monitor: Monitor, tv: Tv, timer: Timer,
 };
 
 /** Edges come from each node's `connectsTo`. If a block defines none at all,
