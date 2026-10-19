@@ -7,7 +7,7 @@ import { pageMetadata } from '@/lib/site';
 
 export const metadata = pageMetadata({
   title: 'Contact',
-  description: 'Email, phone and social links for Sam (Sameer Khan), a full-stack developer and designer taking on freelance projects.',
+  description: 'Email, phone and social links for Sam (Sameer Khan), a full-stack developer and designer.',
   path: '/contact',
 });
 

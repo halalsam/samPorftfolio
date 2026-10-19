@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion, type BezierDefinition } from 'framer-motion';
 import { thunder } from '@/lib/fonts';
-import { useYear } from '@/hooks/useYear';
 import { LogoMark } from '@/components/Logo';
 import { EMAIL, SOCIALS } from '@/lib/contact';
 
@@ -36,16 +35,14 @@ function glideToWork() {
 const isWorkOnHome = (href: string, pathname: string) => href === '/#work' && pathname === '/' && !!document.getElementById('work');
 
 /**
- * Fixed top bar. From md up: logo, availability line, inline links, laid out
- * on a three-column grid so the middle line stays centred. Below md the
- * links fold into a full-screen menu, which also surfaces the availability
- * line, email and socials that don't fit the bar on a phone.
+ * Fixed top bar. From md up: logo left, inline links right. Below md the
+ * links fold into a full-screen menu, which also surfaces the email and
+ * socials that don't fit the bar on a phone.
  *
  * The bar uses mix-blend-difference so it reads over any section. The menu
  * panel renders as a sibling, outside the blend, so it keeps its own colour.
  */
 export const Header = () => {
-  const year = useYear();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -122,15 +119,13 @@ export const Header = () => {
   return (
     <>
       <header className="header fixed inset-x-0 top-0 z-50 text-white mix-blend-difference">
-        <div className="grid h-16 grid-cols-[1fr_auto] items-center gap-6 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[env(safe-area-inset-top)] sm:pl-6 sm:pr-6 md:h-20 md:grid-cols-[1fr_auto_1fr] lg:pl-10 lg:pr-10">
+        <div className="grid h-16 grid-cols-[1fr_auto] items-center gap-6 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[env(safe-area-inset-top)] sm:pl-6 sm:pr-6 md:h-20 lg:pl-10 lg:pr-10">
           <div className="nav relative flex justify-self-start">
             <Link href="/" aria-label="Sam, home" className={`text-[1.75rem] font-bold leading-none sm:text-3xl ${FOCUS}`}>
               sam
             </Link>
             <LogoMark />
           </div>
-
-          <p className="nav hidden whitespace-nowrap text-sm opacity-70 md:block lg:text-base">Taking on freelance projects in {year}</p>
 
           <nav aria-label="Main" className="hidden gap-x-8 justify-self-end text-sm md:flex lg:gap-x-10 lg:text-base">
             {LINKS.map(({ label, href }) => (
@@ -204,7 +199,6 @@ export const Header = () => {
               transition={{ duration: 0.6, delay: 0.45, ease: EASE }}
               className="mt-12 flex flex-col gap-6 text-base"
             >
-              <p className="text-white/60">Taking on freelance projects in {year}</p>
               <a href={EMAIL.href} className={`w-fit break-all text-lg ${FOCUS}`}>
                 {EMAIL.label}
               </a>

@@ -9,7 +9,5 @@ export default function Image() {
   return renderOg({
     eyebrow: 'Portfolio',
     title: 'Full-stack developer & designer.',
-    subtitle: 'Web apps, mobile apps and the servers behind them — designed, built and shipped.',
-    footnote: `${SITE.name} · Taking on freelance projects`,
-  });
+    subtitle: 'Web apps, mobile apps and the servers behind them — designed, built and shipped.',  });
 }

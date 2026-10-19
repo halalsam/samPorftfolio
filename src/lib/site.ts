@@ -24,7 +24,7 @@ export const SITE = {
   jobTitle: 'Full-Stack Developer & Designer',
   title: 'Sameer Khan (Sam) — Full-Stack Developer & Designer',
   description:
-    'Sam (Sameer Khan) — full-stack developer & designer building web apps, mobile apps and backends with Next.js, NestJS and React Native. Open to freelance.',
+    'Sam (Sameer Khan) — full-stack developer & designer building web apps, mobile apps and backends with Next.js, NestJS and React Native.',
   locale: 'en_US',
   background: '#100f0f',
   signal: '#ff2b1f',
@@ -32,7 +32,6 @@ export const SITE = {
     'Sameer Khan',
     'Sam',
     'full-stack developer',
-    'freelance developer',
     'web developer',
     'frontend developer',
     'Next.js developer',
