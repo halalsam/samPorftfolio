@@ -5,7 +5,7 @@
 // the site's background. It fades in after a short delay, so fast
 // navigations never flash it.
 
-const BAR = 'bg-white/[0.06] animate-pulse motion-reduce:animate-none';
+const BAR = 'bg-white/6 animate-pulse motion-reduce:animate-none';
 
 export default function Loading() {
   return (
@@ -13,7 +13,7 @@ export default function Loading() {
       <span className="sr-only">Loading project</span>
       <div
         aria-hidden
-        className="flex w-full flex-col overflow-hidden rounded-[50px] bg-white/[0.025] px-5 pb-16 pt-10 animate-in fade-in fill-mode-both delay-150 duration-500 motion-reduce:animate-none sm:px-10 sm:pt-14 lg:px-14"
+        className="flex w-full flex-col overflow-hidden rounded-[50px] bg-white/2.5 px-5 pb-16 pt-10 animate-in fade-in fill-mode-both delay-150 duration-500 motion-reduce:animate-none sm:px-10 sm:pt-14 lg:px-14"
       >
         <div className="flex items-center justify-between gap-4">
           <div className={`h-4 w-20 ${BAR}`} />
@@ -28,11 +28,11 @@ export default function Loading() {
               <div className={`h-[clamp(1.6rem,3vw,2.6rem)] w-[min(100%,26rem)] ${BAR}`} />
               <div className={`h-[clamp(1.6rem,3vw,2.6rem)] w-[min(80%,18rem)] ${BAR}`} />
             </div>
-            <div className={`h-[4.75rem] w-full max-w-[15rem] lg:col-span-5 lg:justify-self-end ${BAR}`} />
+            <div className={`h-19 w-full max-w-60 lg:col-span-5 lg:justify-self-end ${BAR}`} />
           </div>
 
           <div className="mt-14 sm:mt-20">
-            <div className="h-px w-full bg-white/[0.08]" />
+            <div className="h-px w-full bg-white/8" />
             <div className="grid grid-cols-2 gap-x-8 gap-y-6 pt-6 md:grid-cols-4">
               {[0, 1, 2, 3].map((i) => (
                 <div key={i} className="flex flex-col gap-2.5">
@@ -43,7 +43,7 @@ export default function Loading() {
             </div>
           </div>
 
-          <div className={`-mx-5 mt-16 aspect-[16/9] sm:-mx-10 sm:mt-24 lg:-mx-14 ${BAR}`} />
+          <div className={`-mx-5 mt-16 aspect-video sm:-mx-10 sm:mt-24 lg:-mx-14 ${BAR}`} />
         </div>
       </div>
     </main>

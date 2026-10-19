@@ -43,7 +43,7 @@ export default function ChapterRail({ chapters }) {
                 type="button"
                 onClick={() => scrollToId(c.anchor)}
                 aria-current={on ? 'location' : undefined}
-                className="group relative flex items-center gap-3 py-1.5 pr-3 outline-none"
+                className="group relative flex items-center gap-3 py-1.5 pr-3 outline-hidden"
               >
                 <span className="translate-x-1 text-xs text-pd-fg opacity-0 transition-[opacity,transform] duration-300 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100 motion-reduce:transition-none">
                   {c.label}

@@ -26,7 +26,7 @@ const VIEW = { once: true, margin: '0px 0px -12% 0px' };
 // HIDDEN is a percentage of the *whole* mask. If the padding sat on the mask
 // instead, 100% of the bare line box would leave glyph tops peeking out of
 // the bottom under tight display leading, visible before the reveal runs.
-export const MASK = '-my-[0.14em] inline-flex overflow-hidden';
+export const MASK = 'my-[-0.14em] inline-flex overflow-hidden';
 export const MASKED = 'inline-block py-[0.14em]';
 export const HIDDEN = '101%';
 

@@ -17,12 +17,12 @@ const LINKS = [
 const EASE = [0.16, 1, 0.3, 1];
 const DESKTOP = '(min-width: 768px)';
 
-const FOCUS = 'outline-none focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-current';
+const FOCUS = 'outline-hidden focus-visible:outline-solid focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-current';
 
 // `nav` is the hook the preloader animates in (see pre-loader). The
 // underline draws on hover or focus and stays drawn for the current page.
 const LINK =
-  'nav relative py-1 outline-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 hover:after:scale-x-100 focus-visible:after:scale-x-100 aria-[current=page]:after:scale-x-100 motion-reduce:after:transition-none';
+  'nav relative py-1 outline-hidden after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 hover:after:scale-x-100 focus-visible:after:scale-x-100 aria-[current=page]:after:scale-x-100 motion-reduce:after:transition-none';
 
 // On the home page, glide to the work index through Locomotive (Lenis)
 // instead of jumping; elsewhere the link navigates to /#work as usual.
@@ -185,7 +185,7 @@ export const Header = () => {
                         href={href}
                         onClick={onMenuLink(href)}
                         aria-current={current(href)}
-                        className={`${thunder.className} block py-1 text-[clamp(4.5rem,26vw,9rem)] leading-[0.9] transition-colors duration-300 hover:text-signal focus-visible:text-signal aria-[current=page]:text-signal outline-none`}
+                        className={`${thunder.className} block py-1 text-[clamp(4.5rem,26vw,9rem)] leading-[0.9] transition-colors duration-300 hover:text-signal focus-visible:text-signal aria-[current=page]:text-signal outline-hidden`}
                       >
                         {label}
                       </Link>

@@ -12,7 +12,7 @@ import { Logo } from '@/components/Logo';
 
 const UNDERLINE =
   'relative after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 group-hover:after:scale-x-100 group-focus-visible:after:scale-x-100 motion-reduce:after:transition-none';
-const FOCUS = 'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal';
+const FOCUS = 'outline-hidden focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal';
 
 /**
  * The sign-off. No slogan: one plain line, then the email set huge as the
@@ -28,7 +28,7 @@ export default function Footer() {
 
   return (
     <footer ref={container} className="relative overflow-hidden">
-      <motion.div style={{ y }} className="flex min-h-[100svh] flex-col justify-between gap-20 px-6 pb-8 pt-28 sm:px-10 sm:pt-36">
+      <motion.div style={{ y }} className="flex min-h-svh flex-col justify-between gap-20 px-6 pb-8 pt-28 sm:px-10 sm:pt-36">
         <div>
           <p className="max-w-[22ch] text-[clamp(1.75rem,3.4vw,3.25rem)] font-light leading-[1.1] tracking-[-0.02em] text-white">
             Have something to build? Write to me.

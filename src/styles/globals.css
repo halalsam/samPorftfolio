@@ -1,390 +1,505 @@
-@import url('../css/clash-display.css');
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('../css/clash-display.css') layer(base);
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
+/* `inline` so utilities reference the source variables directly: the --pd-*
+   values are set per case study on a wrapper, not on :root. */
+@theme inline {
+  /* Project-page theme tokens. Each case study sets these CSS variables from
+     its own `theme` (see components/project/theme.js). */
+  --color-pd-bg: var(--pd-bg);
+  --color-pd-fg: var(--pd-fg);
+  --color-pd-muted: var(--pd-muted);
+  --color-pd-faint: var(--pd-faint);
+  --color-pd-line: var(--pd-line);
+  --color-pd-surface: var(--pd-surface);
+  --color-pd-accent: var(--pd-accent);
+  --color-pd-accent-fg: var(--pd-accent-fg);
+  --color-pd-accent-text: var(--pd-accent-text);
+  --color-pd-accent-soft: var(--pd-accent-soft);
 
-*{
-   -webkit-font-smoothing: antialiased;
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
 }
 
-body {
-  background: #100f0f;
-  color: #b9bcc1;
+@theme {
+  /* The site's one accent outside project pages (the preloader red). */
+  --color-signal: #ff2b1f;
+  --color-orange: #ed7c50;
+  --color-darkOrange: #d96d43;
+  --color-darkGrey: #595959;
+  --color-lightGrey: #8a8a8a;
+  --color-green: #43ae61;
+  --color-purple: #8566f6;
+  --color-turks: #a6e2e3;
+  --color-red: #e46060;
+  --color-black: #282829;
+  --color-white: #f5f4f5;
 
-  font-family: 'ClashDisplay-Variable';
-  font-weight: 400;
-  max-width: 100vw;
-  transition: background 0.6s ease-out, color 0.6s ease-out;
+  --ease-in-expo: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-sharp: cubic-bezier(0.7, 0, 0.2, 1);
 }
 
-*{
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-
-
-.slide-in{
-  z-index: 30;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: #ffffff;
-  transform-origin: bottom;
-}
-.slide-out{
-  z-index: 30;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: #ffffff;
-  transform-origin: top;
-}
-
-.scroller span{
-  display: block;
-  margin-right: 30px;
-}
-.progress {
-  position: fixed;
-  left: 0;
-  right: 0;
-  height: 5px;
-  background: var(--accent);
-  bottom: 100px;
-}
-
-#circle svg text {
-  transform-origin: 50% 50%;
-  -webkit-animation-name: rotate;
-  -moz-animation-name: rotate;
-  -ms-animation-name: rotate;
-  -o-animation-name: rotate;
-  animation-name: rotate;
-  -webkit-animation-duration: 10s;
-  -moz-animation-duration: 10s;
-  -ms-animation-duration: 10s;
-  -o-animation-duration: 10s;
-  animation-duration: 10s;
-  -webkit-animation-iteration-count: infinite;
-  -moz-animation-iteration-count: infinite;
-  -ms-animation-iteration-count: infinite;
-  -o-animation-iteration-count: infinite;
-  animation-iteration-count: infinite;
-  -webkit-animation-timing-function: linear;
-  -moz-animation-timing-function: linear;
-  -ms-animation-timing-function: linear;
-  -o-animation-timing-function: linear;
-  animation-timing-function: linear;
-}
-
-@-webkit-keyframes rotate {
-  from {
-    -webkit-transform: rotate(0);
-  }
-  to {
-    -webkit-transform: rotate(360deg);
+/* v4 preflight gives buttons `cursor: default`; keep v3's pointer. */
+@layer base {
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
   }
 }
 
-@-moz-keyframes rotate {
-  from {
-    -moz-transform: rotate(0);
-  }
-  to {
-    -moz-transform: rotate(360deg);
-  }
-}
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
 
-@-ms-keyframes rotate {
-  from {
-    -ms-transform: rotate(0);
-  }
-  to {
-    -ms-transform: rotate(360deg);
-  }
-}
-
-@-o-keyframes rotate {
-  from {
-    -o-transform: rotate(0);
-  }
-  to {
-    -o-transform: rotate(360deg);
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
   }
 }
 
-@keyframes rotate {
-  from {
-    transform: rotate(0);
+@layer utilities {
+  * {
+    -webkit-font-smoothing: antialiased;
   }
-  to {
-    transform: rotate(360deg);
+
+  body {
+    background: #100f0f;
+    color: #b9bcc1;
+
+    font-family: 'ClashDisplay-Variable';
+    font-weight: 400;
+    max-width: 100vw;
+    transition:
+      background 0.6s ease-out,
+      color 0.6s ease-out;
   }
-}
 
-@media screen and ( max-width: 979px) {
-  #circle svg {
-    height: 360px;
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
   }
-}
 
-.mask{position: relative;
-overflow: hidden;
-display: inline-flex;
- }
+  .slide-in {
+    z-index: 30;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffff;
+    transform-origin: bottom;
+  }
+  .slide-out {
+    z-index: 30;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffff;
+    transform-origin: top;
+  }
 
+  .scroller span {
+    display: block;
+    margin-right: 30px;
+  }
+  .progress {
+    position: fixed;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: var(--accent);
+    bottom: 100px;
+  }
 
-.about span:not(:nth-child(6)) {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  height: 30px;
-  width: 30px;
-  background-color: #ff0000;
-  border-radius: 50%;
-  transition: .6s ease;
-}
+  #circle svg text {
+    transform-origin: 50% 50%;
+    -webkit-animation-name: rotate;
+    -moz-animation-name: rotate;
+    -ms-animation-name: rotate;
+    -o-animation-name: rotate;
+    animation-name: rotate;
+    -webkit-animation-duration: 10s;
+    -moz-animation-duration: 10s;
+    -ms-animation-duration: 10s;
+    -o-animation-duration: 10s;
+    animation-duration: 10s;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-iteration-count: infinite;
+    -ms-animation-iteration-count: infinite;
+    -o-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+    -webkit-animation-timing-function: linear;
+    -moz-animation-timing-function: linear;
+    -ms-animation-timing-function: linear;
+    -o-animation-timing-function: linear;
+    animation-timing-function: linear;
+  }
 
-.about span:nth-child(6) {
-  position: relative;
-}
+  @-webkit-keyframes rotate {
+    from {
+      -webkit-transform: rotate(0);
+    }
+    to {
+      -webkit-transform: rotate(360deg);
+    }
+  }
 
-.about span:nth-child(1) {
-  transform: translate(-4em, -10em);
-}
+  @-moz-keyframes rotate {
+    from {
+      -moz-transform: rotate(0);
+    }
+    to {
+      -moz-transform: rotate(360deg);
+    }
+  }
 
-.about span:nth-child(2) {
-  transform: translate(-6em, 9em);
-}
+  @-ms-keyframes rotate {
+    from {
+      -ms-transform: rotate(0);
+    }
+    to {
+      -ms-transform: rotate(360deg);
+    }
+  }
 
-.about span:nth-child(3) {
-  transform: translate(-.2em, -8.9em);
-}
+  @-o-keyframes rotate {
+    from {
+      -o-transform: rotate(0);
+    }
+    to {
+      -o-transform: rotate(360deg);
+    }
+  }
 
-.about span:nth-child(4) {
-  transform: translate(3.5em, 8em);
-}
+  @keyframes rotate {
+    from {
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 
-.about span:nth-child(5) {
-  transform: translate(3.5em, -9em);
-}
+  @media screen and (max-width: 979px) {
+    #circle svg {
+      height: 360px;
+    }
+  }
 
-.about:hover span:not(:nth-child(6)) {
-  transform: translate(-50%, -50%) scale(10);
-  transition: 1.5s ease-out;
-}
-  .description{
+  .mask {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+  }
+
+  .about span:not(:nth-child(6)) {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    height: 30px;
+    width: 30px;
+    background-color: #ff0000;
+    border-radius: 50%;
+    transition: 0.6s ease;
+  }
+
+  .about span:nth-child(6) {
+    position: relative;
+  }
+
+  .about span:nth-child(1) {
+    transform: translate(-4em, -10em);
+  }
+
+  .about span:nth-child(2) {
+    transform: translate(-6em, 9em);
+  }
+
+  .about span:nth-child(3) {
+    transform: translate(-0.2em, -8.9em);
+  }
+
+  .about span:nth-child(4) {
+    transform: translate(3.5em, 8em);
+  }
+
+  .about span:nth-child(5) {
+    transform: translate(3.5em, -9em);
+  }
+
+  .about:hover span:not(:nth-child(6)) {
+    transform: translate(-50%, -50%) scale(10);
+    transition: 1.5s ease-out;
+  }
+  .description {
     clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 0);
   }
 
-
   ::-webkit-scrollbar {
- display: none;
-}
+    display: none;
+  }
 
+  .progress {
+    position: fixed;
+    top: 0;
+    height: 3px;
+    background: red;
+  }
+  html {
+    background: rgba(160, 160, 160, 0.351);
+  }
 
+  .fill-low {
+    fill: rgba(160, 160, 160, 0.351);
+  }
+  .white {
+    background-color: #ffffff;
+  }
+  .black {
+    background-color: #100f0f;
+  }
 
-.progress {
-  position: fixed;
-  top: 0;
-  height: 3px;
-  background: red;
-}
-html{
-  background: rgba(160, 160, 160, 0.351);
-}
+  .hero-title1 {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
+  .hero-para1 {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  }
 
-.fill-low{
-  fill: rgba(160, 160, 160, 0.351);
-}
-.white{
-background-color: #ffffff;
-}
-.black{
-  background-color: #100f0f;
-}
-
-.hero-title1 {
-  
-   clip-path: polygon(0% 0%,100% 0%,100% 100%,0% 100% );
-}
-.hero-para1{
-    clip-path: polygon(0% 0%,100% 0%,100% 100%,0% 100% );
-}
-
-.hero-title{
+  .hero-title {
     font-family: 'Thunder';
-}
+  }
 
-/* Preloader initial states — prevent a flash of final content on first paint,
+  /* Preloader initial states — prevent a flash of final content on first paint,
    before GSAP's useEffect runs. These mirror the gsap.set() calls in
    src/components/pre-loader/index.jsx, and only apply while the preloader
    overlay is actually mounted (pages rendered with showPreloader={false}
    must not hide their hero/nav). GSAP overwrites them as it animates. */
-body:has(.preloader) .hero-title { transform: translateY(300px) scale(2); opacity: 0; }
-body:has(.preloader) .hero-para { transform: translateY(100px); opacity: 0; }
-body:has(.preloader) .nav { transform: translateY(-100px); }
-body:has(.preloader) #hero { transform: scale(0.8); }
+  body:has(.preloader) .hero-title {
+    transform: translateY(300px) scale(2);
+    opacity: 0;
+  }
+  body:has(.preloader) .hero-para {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  body:has(.preloader) .nav {
+    transform: translateY(-100px);
+  }
+  body:has(.preloader) #hero {
+    transform: scale(0.8);
+  }
 
-/* ---------------------------------------------------------------------------
+  /* ---------------------------------------------------------------------------
    Preloader ("The Boot Sequence") — namespaced pl-* so nothing collides with
    the .loader spinner used in Recent-Work. Initial states here mirror the
    gsap.set() calls so there is no flash before the timeline takes over. */
 
-.preloader .pl-boot {
-  opacity: 0;
-}
-.preloader .pl-counter-inner {
-  transform: translateY(112%);
-}
-.preloader .pl-bar-fill {
-  transform: scaleX(0);
-  transform-origin: left center;
-}
+  .preloader .pl-boot {
+    opacity: 0;
+  }
+  .preloader .pl-counter-inner {
+    transform: translateY(112%);
+  }
+  .preloader .pl-bar-fill {
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
 
-/* Glitch boot text — RGB-split flicker + occasional clip jump. The line
+  /* Glitch boot text — RGB-split flicker + occasional clip jump. The line
    content itself is scrambled from JS; this layer adds the CRT wobble. */
-.preloader .pl-boot-code {
-  position: relative;
-  animation: pl-glitch 2.4s steps(1) infinite;
-}
+  .preloader .pl-boot-code {
+    position: relative;
+    animation: pl-glitch 2.4s steps(1) infinite;
+  }
 
-@keyframes pl-glitch {
-  0%,
-  86% {
-    text-shadow: none;
-    transform: none;
-    clip-path: none;
+  @keyframes pl-glitch {
+    0%,
+    86% {
+      text-shadow: none;
+      transform: none;
+      clip-path: none;
+    }
+    87% {
+      text-shadow:
+        2px 0 rgba(255, 43, 31, 0.85),
+        -2px 0 rgba(60, 220, 255, 0.7);
+      transform: translateX(2px) skewX(4deg);
+    }
+    90% {
+      text-shadow:
+        -3px 0 rgba(255, 43, 31, 0.85),
+        3px 0 rgba(60, 220, 255, 0.7);
+      transform: translateX(-3px);
+      clip-path: inset(20% 0 45% 0);
+    }
+    93% {
+      text-shadow:
+        1px 0 rgba(255, 43, 31, 0.85),
+        -1px 0 rgba(60, 220, 255, 0.7);
+      transform: translateX(1px) skewX(-3deg);
+      clip-path: inset(60% 0 5% 0);
+    }
+    96% {
+      text-shadow: none;
+      transform: none;
+      clip-path: none;
+    }
   }
-  87% {
-    text-shadow:
-      2px 0 rgba(255, 43, 31, 0.85),
-      -2px 0 rgba(60, 220, 255, 0.7);
-    transform: translateX(2px) skewX(4deg);
-  }
-  90% {
-    text-shadow:
-      -3px 0 rgba(255, 43, 31, 0.85),
-      3px 0 rgba(60, 220, 255, 0.7);
-    transform: translateX(-3px);
-    clip-path: inset(20% 0 45% 0);
-  }
-  93% {
-    text-shadow:
-      1px 0 rgba(255, 43, 31, 0.85),
-      -1px 0 rgba(60, 220, 255, 0.7);
-    transform: translateX(1px) skewX(-3deg);
-    clip-path: inset(60% 0 5% 0);
-  }
-  96% {
-    text-shadow: none;
-    transform: none;
-    clip-path: none;
-  }
-}
 
-/* Rolling odometer digits: uniform masked cells, translated by yPercent
+  /* Rolling odometer digits: uniform masked cells, translated by yPercent
    from JS. Cell height and the strip's baseline shift are derived from
    Thunder-BlackLC's measured glyph metrics (digit ink: ascent 0.71em,
    descent 0.01em; font box 0.72/0.2) so the ink sits dead-center in the
    mask instead of being clipped by line-box centering. */
-.preloader .pl-digit {
-  display: block;
-  height: 0.76em;
-  overflow: hidden;
-}
-.preloader .pl-digit-strip {
-  display: block;
-  /* line-height:1 puts ink at 0.05em from cell top; lift it to 0.02em */
-  margin-top: -0.03em;
-}
-.preloader .pl-digit-strip > span {
-  display: block;
-  height: 0.76em;
-  width: 0.4em;
-  line-height: 1;
-  text-align: center;
-}
+  .preloader .pl-digit {
+    display: block;
+    height: 0.76em;
+    overflow: hidden;
+  }
+  .preloader .pl-digit-strip {
+    display: block;
+    /* line-height:1 puts ink at 0.05em from cell top; lift it to 0.02em */
+    margin-top: -0.03em;
+  }
+  .preloader .pl-digit-strip > span {
+    display: block;
+    height: 0.76em;
+    width: 0.4em;
+    line-height: 1;
+    text-align: center;
+  }
 
-/* Film grain — feTurbulence tile, stepped drift for a filmic shimmer */
-.preloader .pl-grain {
-  position: absolute;
-  inset: -100%;
-  pointer-events: none;
-  opacity: 0.06;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: pl-grain 0.9s steps(8) infinite;
-}
+  /* Film grain — feTurbulence tile, stepped drift for a filmic shimmer */
+  .preloader .pl-grain {
+    position: absolute;
+    inset: -100%;
+    pointer-events: none;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: pl-grain 0.9s steps(8) infinite;
+  }
 
-@keyframes pl-grain {
-  0% { transform: translate(0, 0); }
-  12.5% { transform: translate(-2%, -3%); }
-  25% { transform: translate(3%, -1%); }
-  37.5% { transform: translate(-1%, 3%); }
-  50% { transform: translate(2%, 2%); }
-  62.5% { transform: translate(-3%, 1%); }
-  75% { transform: translate(1%, -2%); }
-  87.5% { transform: translate(-2%, 2%); }
-  100% { transform: translate(0, 0); }
-}
+  @keyframes pl-grain {
+    0% {
+      transform: translate(0, 0);
+    }
+    12.5% {
+      transform: translate(-2%, -3%);
+    }
+    25% {
+      transform: translate(3%, -1%);
+    }
+    37.5% {
+      transform: translate(-1%, 3%);
+    }
+    50% {
+      transform: translate(2%, 2%);
+    }
+    62.5% {
+      transform: translate(-3%, 1%);
+    }
+    75% {
+      transform: translate(1%, -2%);
+    }
+    87.5% {
+      transform: translate(-2%, 2%);
+    }
+    100% {
+      transform: translate(0, 0);
+    }
+  }
 
-/* Tech-stack marquee — two seamless rows, opposite directions. Each track
+  /* Tech-stack marquee — two seamless rows, opposite directions. Each track
    holds two copies of its row; -50% loops without a visible seam. */
-.stack-marquee {
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent,
-    #000 12%,
-    #000 88%,
-    transparent
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    #000 12%,
-    #000 88%,
-    transparent
-  );
-}
-.stack-track {
-  display: flex;
-  width: max-content;
-  animation: stack-scroll 36s linear infinite;
-}
-.stack-track-reverse {
-  animation-direction: reverse;
-}
-.stack-marquee:hover .stack-track,
-.stack-marquee.stack-paused .stack-track {
-  animation-play-state: paused;
-}
-@keyframes stack-scroll {
-  to {
-    transform: translateX(-50%);
+  .stack-marquee {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 12%,
+      #000 88%,
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 12%,
+      #000 88%,
+      transparent
+    );
   }
-}
-@media (prefers-reduced-motion: reduce) {
   .stack-track {
-    animation: none;
+    display: flex;
+    width: max-content;
+    animation: stack-scroll 36s linear infinite;
   }
-  .preloader .pl-boot-code {
-    animation: none;
+  .stack-track-reverse {
+    animation-direction: reverse;
   }
-}
+  .stack-marquee:hover .stack-track,
+  .stack-marquee.stack-paused .stack-track {
+    animation-play-state: paused;
+  }
+  @keyframes stack-scroll {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stack-track {
+      animation: none;
+    }
+    .preloader .pl-boot-code {
+      animation: none;
+    }
+  }
 
-.reveal {
-  visibility: hidden;
-  position: relative;
-  overflow: hidden;
+  .reveal {
+    visibility: hidden;
+    position: relative;
+    overflow: hidden;
+  }
 }
 
 @layer base {

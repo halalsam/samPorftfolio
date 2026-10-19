@@ -35,7 +35,7 @@ export default function LinkButton({ link, primary = false }) {
           href={link.href}
           target="_blank"
           rel="noreferrer"
-          className="group relative inline-flex min-w-[15rem] flex-col overflow-hidden bg-pd-accent px-6 py-4 text-pd-accent-fg outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pd-fg"
+          className="group relative inline-flex min-w-60 flex-col overflow-hidden bg-pd-accent px-6 py-4 text-pd-accent-fg outline-hidden focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pd-fg"
         >
           <SlabText kind={kind} label={link.label} />
           <span aria-hidden className={`absolute inset-0 translate-y-full overflow-hidden bg-pd-fg text-pd-bg ${WIPE} group-hover:translate-y-0 group-focus-visible:translate-y-0`}>
@@ -53,7 +53,7 @@ export default function LinkButton({ link, primary = false }) {
       href={link.href}
       target="_blank"
       rel="noreferrer"
-      className="group inline-flex items-baseline gap-3 outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pd-accent"
+      className="group inline-flex items-baseline gap-3 outline-hidden focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pd-accent"
     >
       <span className="text-sm text-pd-muted">{kind}</span>
       <span className="relative pb-1 text-lg font-medium text-pd-fg">

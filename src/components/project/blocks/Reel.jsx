@@ -28,7 +28,7 @@ export default function Reel({ block, meta }) {
         <div
           className={
             landscape
-              ? 'relative z-10 -mt-[16%] ml-auto mr-[4%] w-[44%] max-w-[340px] md:-mt-[22%] md:mr-[5%] md:w-[19%]'
+              ? 'relative z-10 mt-[-16%] ml-auto mr-[4%] w-[44%] max-w-[340px] md:mt-[-22%] md:mr-[5%] md:w-[19%]'
               : 'mx-auto w-full max-w-[340px]'
           }
         >

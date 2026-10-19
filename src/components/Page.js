@@ -22,7 +22,7 @@ export default function Page({ children, showPreloader = true, showFooter = true
   // lands instantly instead of travelling (opacity still fades).
   return (
     <MotionConfig reducedMotion="user">
-      <motion.div className="progress z-[9999]" style={{ scaleX }} />
+      <motion.div className="progress z-9999" style={{ scaleX }} />
       <div ref={container} className="h-auto w-auto">
         {showPreloader && <PreLoader />}
         <Header />

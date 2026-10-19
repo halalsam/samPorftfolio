@@ -10,7 +10,7 @@ import MagneticButton from '@/components/Common/magnetic-button';
 import WipeText from '@/components/ui/wipe-text';
 import { Draw, EASE_OUT, useAmount } from '@/components/ui/reveal';
 
-const FOCUS = 'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-signal';
+const FOCUS = 'outline-hidden focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-signal';
 const UNDERLINE =
   'relative after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 motion-reduce:after:transition-none';
 const SPRING = { stiffness: 220, damping: 26, mass: 0.6 };
@@ -62,18 +62,18 @@ function Row({ card, index, dim, onEnter, onFocusRow, onBlurRow }) {
         >
           {/* touch screens get the cover inline; pointers get the floating preview */}
           {card.image ? (
-            <span className="relative col-span-12 block aspect-[16/10] overflow-hidden [@media(hover:hover)]:hidden">
+            <span className="relative col-span-12 block aspect-16/10 overflow-hidden [@media(hover:hover)]:hidden">
               <Image src={card.image} alt="" fill sizes="92vw" className="object-cover" />
             </span>
           ) : null}
-          <span className="order-3 col-span-12 text-sm lg:order-none lg:col-span-1">{card.year}</span>
+          <span className="order-3 col-span-12 text-sm lg:order-0 lg:col-span-1">{card.year}</span>
           <WipeText
             color={card.accent}
-            className={`${thunder.className} order-2 col-span-12 text-[clamp(3rem,8.5vw,8.5rem)] uppercase leading-[0.86] text-white lg:order-none lg:col-span-7`}
+            className={`${thunder.className} order-2 col-span-12 text-[clamp(3rem,8.5vw,8.5rem)] uppercase leading-[0.86] text-white lg:order-0 lg:col-span-7`}
           >
             {card.name}
           </WipeText>
-          <span className="order-4 col-span-12 flex flex-col gap-1 text-sm lg:order-none lg:col-span-4">
+          <span className="order-4 col-span-12 flex flex-col gap-1 text-sm lg:order-0 lg:col-span-4">
             <span>{card.role}</span>
             <span className={`w-fit text-white ${UNDERLINE} group-hover:after:scale-x-100 group-focus-visible:after:scale-x-100`}>{kindOf(card)}</span>
           </span>
@@ -101,7 +101,7 @@ function Preview({ cards, active, loaded, x, y, rotate, innerRef }) {
         initial={false}
         animate={{ opacity: show ? 1 : 0, scale: show ? 1 : 0.9 }}
         transition={{ duration: 0.35, ease: EASE_OUT }}
-        className="relative aspect-[16/10] overflow-hidden bg-white/5"
+        className="relative aspect-16/10 overflow-hidden bg-white/5"
       >
         {cards.map((c, i) =>
           c.image && loaded.has(i) ? (

@@ -32,7 +32,7 @@ export default function ProjectPage({ project, adjacent }) {
       >
         <Link
           href="/#work"
-          className="group inline-flex items-center gap-2 text-pd-muted outline-none transition-colors hover:text-pd-fg focus-visible:text-pd-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pd-accent"
+          className="group inline-flex items-center gap-2 text-pd-muted outline-hidden transition-colors hover:text-pd-fg focus-visible:text-pd-fg focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-pd-accent"
         >
           <PiArrowLeftThin className="text-lg transition-transform duration-300 group-hover:-translate-x-1 motion-reduce:transition-none" />
           All work

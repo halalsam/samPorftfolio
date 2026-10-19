@@ -9,7 +9,7 @@ const WIPE = 'transition-transform duration-700 ease-in-out-sharp motion-reduce:
  */
 export default function WipeText({ children, color, className = '' }) {
   return (
-    <span className={`relative -my-[0.14em] block py-[0.14em] ${className}`}>
+    <span className={`relative my-[-0.14em] block py-[0.14em] ${className}`}>
       {children}
       <span aria-hidden className="absolute inset-0 overflow-hidden">
         <span className={`block h-full -translate-x-full overflow-hidden ${WIPE} group-hover:translate-x-0 group-focus-visible:translate-x-0`}>

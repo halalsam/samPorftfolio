@@ -8,12 +8,12 @@ import { submitEnquiry } from '@/actions/enquiry.actions';
 import { NEED_OPTIONS } from '@/lib/enquiry';
 import { EMAIL } from '@/lib/contact';
 
-const FOCUS = 'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal';
+const FOCUS = 'outline-hidden focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal';
 
 // Fields are bare type on a hairline that turns signal red on focus, so they
 // sit in the same rows as the channels above.
 const INPUT =
-  'w-full border-0 border-b border-white/25 bg-transparent px-0 pb-3 text-[clamp(1.25rem,2.2vw,2rem)] font-light leading-tight tracking-[-0.01em] text-white outline-none transition-colors duration-300 placeholder:text-white/30 focus:border-signal aria-[invalid=true]:border-signal motion-reduce:transition-none';
+  'w-full border-0 border-b border-white/25 bg-transparent px-0 pb-3 text-[clamp(1.25rem,2.2vw,2rem)] font-light leading-tight tracking-[-0.01em] text-white outline-hidden transition-colors duration-300 placeholder:text-white/30 focus:border-signal aria-invalid:border-signal motion-reduce:transition-none';
 
 const initialState = { status: 'idle' };
 
@@ -78,7 +78,7 @@ export default function EnquiryForm() {
       ) : (
         <form action={formAction} noValidate className="mt-16 sm:mt-24">
           {/* Spam traps: a field people never see, and when the form mounted. */}
-          <div aria-hidden="true" className="absolute -left-[10000px] h-px w-px overflow-hidden">
+          <div aria-hidden="true" className="absolute left-[-10000px] h-px w-px overflow-hidden">
             <label htmlFor="enquiry-fax">Leave this empty</label>
             <input id="enquiry-fax" type="text" name="contact_me_by_fax" tabIndex={-1} autoComplete="off" defaultValue="" />
           </div>
@@ -92,7 +92,7 @@ export default function EnquiryForm() {
               <input {...field('email')} type="email" autoComplete="email" required placeholder="you@company.com" className={INPUT} />
             </Row>
             <Row id="enquiry-need" label="What you need" error={errors.need}>
-              <select {...field('need')} required className={`${INPUT} cursor-pointer [color-scheme:dark]`}>
+              <select {...field('need')} required className={`${INPUT} cursor-pointer scheme-dark`}>
                 <option value="" disabled>
                   Choose one
                 </option>

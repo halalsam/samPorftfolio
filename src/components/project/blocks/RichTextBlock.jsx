@@ -9,7 +9,7 @@ export default function RichTextBlock({ block, meta }) {
     <Section meta={meta} heading={block.heading}>
       <RichText
         value={block.body}
-        className="max-w-[62ch] text-lg leading-[1.7] text-pd-muted [&>p:first-child]:text-[1.375rem] [&>p:first-child]:leading-[1.5] [&>p:first-child]:text-pd-fg"
+        className="max-w-[62ch] text-lg leading-[1.7] text-pd-muted [&>p:first-child]:text-[1.375rem] [&>p:first-child]:leading-normal [&>p:first-child]:text-pd-fg"
       />
     </Section>
   );

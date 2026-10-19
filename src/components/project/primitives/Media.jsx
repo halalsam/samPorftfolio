@@ -53,7 +53,7 @@ export function AutoVideo({ media, className = '', sound = false, priority = fal
             });
           }}
           aria-label={muted ? 'Unmute' : 'Mute'}
-          className="absolute bottom-[max(0.75rem,6%)] left-[max(0.75rem,5%)] z-10 flex h-9 items-center gap-2 bg-black/60 px-3 text-xs font-medium text-white backdrop-blur-md transition-colors hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          className="absolute bottom-[max(0.75rem,6%)] left-[max(0.75rem,5%)] z-10 flex h-9 items-center gap-2 bg-black/60 px-3 text-xs font-medium text-white backdrop-blur-md transition-colors hover:bg-black/80 focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
           {muted ? <PiSpeakerSlashLight size={16} /> : <PiSpeakerHighLight size={16} />}
           {muted ? 'Sound off' : 'Sound on'}

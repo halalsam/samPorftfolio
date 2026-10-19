@@ -266,7 +266,7 @@ const PreLoader = () => {
     <div
       ref={root}
       aria-hidden="true"
-      className="preloader pointer-events-none fixed inset-0 z-[999]"
+      className="preloader pointer-events-none fixed inset-0 z-999"
     >
       {/* Solid panel — the curve below trails it as it lifts */}
       <div className="absolute inset-0 bg-[#100f0f]" />

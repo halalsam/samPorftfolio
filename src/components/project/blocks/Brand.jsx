@@ -30,9 +30,9 @@ function Swatch({ swatch, index }) {
       onClick={copy}
       aria-label={`Copy ${swatch.name} ${swatch.hex}`}
       style={{ backgroundColor: swatch.hex, color: readableOn(swatch.hex), flexGrow: GROW[index] ?? 1 }}
-      className={`flex min-w-0 flex-col justify-end p-4 text-left outline-none ring-inset ring-current focus-visible:ring-2 sm:h-72 sm:basis-0 ${PHONE[index] ?? 'h-28'}`}
+      className={`flex min-w-0 flex-col justify-end p-4 text-left outline-hidden ring-inset ring-current focus-visible:ring-2 sm:h-72 sm:basis-0 ${PHONE[index] ?? 'h-28'}`}
     >
-      <span className="break-words text-sm font-medium leading-tight">{swatch.name}</span>
+      <span className="wrap-break-word text-sm font-medium leading-tight">{swatch.name}</span>
       <span className="mt-1 font-mono text-xs uppercase opacity-75">{copied ? 'Copied' : swatch.hex}</span>
       <span className="sr-only" aria-live="polite">
         {copied ? `${swatch.hex} copied` : ''}
@@ -53,7 +53,7 @@ export default function Brand({ block, meta }) {
         {block.logo ? (
           <Curtain className="lg:col-span-7">
             <div
-              className="flex aspect-[4/3] items-center justify-center p-[14%] ring-1 ring-inset ring-pd-line"
+              className="flex aspect-4/3 items-center justify-center p-[14%] ring-1 ring-inset ring-pd-line"
               style={{ backgroundColor: block.logoBackground || 'var(--pd-surface)' }}
             >
               <div className="relative w-full max-w-[460px]" style={{ aspectRatio: aspectOf(block.logo, '4 / 1') }}>

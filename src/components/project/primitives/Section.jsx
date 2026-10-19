@@ -35,7 +35,7 @@ export default function Section({ meta, heading, intro, children, className = ''
           <header className="lg:sticky lg:top-28 lg:col-span-4 lg:self-start">
             {meta?.number ? <ChapterMark number={meta.number} label={meta.label} /> : null}
             {heading ? (
-              <h2 className={`max-w-[15ch] text-balance text-[clamp(2rem,3.2vw,3rem)] font-light leading-[1.05] tracking-[-0.025em] text-pd-fg ${meta?.number ? 'mt-7' : ''}`}>
+              <h2 className={`max-w-[15ch] text-balance text-[clamp(2rem,3.2vw,3rem)] font-light leading-[1.05] tracking-tight text-pd-fg ${meta?.number ? 'mt-7' : ''}`}>
                 {heading}
               </h2>
             ) : null}

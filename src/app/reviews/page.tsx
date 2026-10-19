@@ -89,7 +89,7 @@ export default function ReviewPage() {
                   onClick={() => setRating(n)}
                   aria-label={`${n} star${n > 1 ? "s" : ""}`}
                   aria-pressed={rating === n}
-                  className={`h-10 w-10 border text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-white ${
+                  className={`h-10 w-10 border text-sm transition-colors focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-white ${
                     n <= rating
                       ? "border-white bg-white text-black"
                       : "border-white/20 text-white/40 hover:border-white/50"
@@ -117,7 +117,7 @@ export default function ReviewPage() {
           <button
             type="submit"
             disabled={pending}
-            className="w-full sm:w-auto px-8 py-3 bg-white text-black font-medium tracking-tight hover:bg-white/85 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+            className="w-full sm:w-auto px-8 py-3 bg-white text-black font-medium tracking-tight hover:bg-white/85 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
           >
             {pending ? "Sending..." : "Submit review"}
           </button>

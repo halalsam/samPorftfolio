@@ -7,7 +7,7 @@ import WipeText from '@/components/ui/wipe-text';
 import { EMAIL, PHONE, SOCIALS } from '@/lib/contact';
 import EnquiryForm from './EnquiryForm';
 
-const FOCUS = 'outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal';
+const FOCUS = 'outline-hidden focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-signal';
 
 function CopyEmail() {
   const [copied, setCopied] = useState(false);
@@ -44,7 +44,7 @@ function Channel({ label, value, href, external = false, action = null }) {
           {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
           className={`group col-span-12 min-w-0 ${action ? 'sm:col-span-7' : 'sm:col-span-9'} ${FOCUS}`}
         >
-          <WipeText color="#ff2b1f" className="break-words text-[clamp(1.5rem,3.6vw,3.5rem)] font-light leading-[1.05] tracking-[-0.02em] text-white">
+          <WipeText color="#ff2b1f" className="wrap-break-word text-[clamp(1.5rem,3.6vw,3.5rem)] font-light leading-[1.05] tracking-[-0.02em] text-white">
             {value}
           </WipeText>
         </a>

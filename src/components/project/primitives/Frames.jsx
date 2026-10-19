@@ -46,7 +46,7 @@ export function BrowserFrame({ media, url, sizes, priority, sound, delay = 0 }) 
 export function PhoneFrame({ media, sizes = '(min-width: 1024px) 26vw, 70vw', priority, sound, delay = 0 }) {
   return (
     <div className="mx-auto w-full max-w-[340px] rounded-[2.75rem] bg-pd-surface p-[5px] ring-1 ring-pd-line">
-      <Curtain className="rounded-[calc(2.75rem_-_5px)]" cover="bg-pd-surface" delay={delay}>
+      <Curtain className="rounded-[calc(2.75rem-5px)]" cover="bg-pd-surface" delay={delay}>
         <div className="relative w-full" style={{ aspectRatio: aspectOf(media, '9 / 19.5') }}>
           <MediaFill media={media} sizes={sizes} priority={priority} sound={sound} />
         </div>
